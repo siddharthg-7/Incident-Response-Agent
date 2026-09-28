@@ -70,13 +70,14 @@ class MockHindsightAdapter(BaseHindsightAdapter):
             overlap = len(common_tokens) / len(query_tokens) if query_tokens else 0.0
             
             # Boost score if specific high-value security terms match
-            boost = 0.0
-            critical_terms = {"ssh", "brute", "force", "password", "root", "auth", "port", "credential"}
-            matched_critical = query_tokens.intersection(critical_terms).intersection(mem_tokens)
-            if matched_critical:
-                boost = 0.25 * (len(matched_critical) / len(critical_terms))
+            critical_terms = {"ssh", "brute", "force", "password", "root", "auth", "sshd", "port", "credential"}
+            query_critical = query_tokens.intersection(critical_terms)
+            matched_critical = query_critical.intersection(mem_tokens)
+            critical_ratio = len(matched_critical) / len(query_critical) if query_critical else 0.0
 
-            final_score = min(1.0, (0.4 * jaccard) + (0.6 * overlap) + boost)
+            # Composite score combining token overlap and domain relevance
+            composite = (0.25 * jaccard) + (0.35 * overlap) + (0.4 * critical_ratio)
+            final_score = min(0.96, round(composite * 1.5, 3))
 
             if final_score > 0.15:
                 scored_results.append({

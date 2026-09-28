@@ -105,5 +105,4 @@ class IncidentResponse(IncidentBase):
     resolution: Optional[IncidentResolution] = None
     postmortem: Optional[IncidentPostMortem] = None
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
