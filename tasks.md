@@ -1,934 +1,774 @@
-You are preparing the Sentinel Memory repository for final hackathon submission.
+You are now handling SUBMISSION TASK 2 for Sentinel Memory.
 
-THIS IS SUBMISSION TASK 1 ONLY:
+# TASK 2 — FINAL DEMO VIDEO
 
-# GITHUB REPOSITORY — CLEAN, DOCUMENTED, SUBMISSION-READY
+Your objective is to prepare and, where technically possible, record the final demonstration video showing Sentinel Memory working end-to-end.
 
-Do NOT start the article, social media content, or video tasks yet.
+IMPORTANT:
 
-Your only responsibility in this task is to make the GitHub repository clean, understandable, reproducible, technically documented, and ready for judges to inspect.
+This is NOT a development phase.
+
+Do NOT add product features.
+
+Do NOT redesign the application.
+
+Do NOT modify the Hindsight architecture.
+
+Do NOT change working backend logic just for the video.
+
+Do NOT create fake results.
+
+The video must demonstrate the ACTUAL WORKING PRODUCT.
 
 ==================================================
-PROJECT CONTEXT
+1. FIRST READ THE EXISTING DEMO MATERIAL
 ==================================================
 
-Project:
+Before doing anything, inspect:
 
-Sentinel Memory
+docs/DEMO.md
+README.md
+docs/HINDSIGHT.md
+docs/ARCHITECTURE.md
 
-Purpose:
+Also inspect:
 
-A Hindsight-powered cybersecurity Incident Response Agent for SOC analysts.
+scripts/verify_final_demo.py
+scripts/verify_phase4_evaluation.py
+scripts/run_milestone1_demo.py
 
-Core workflow:
+Inspect the current frontend and backend implementation.
 
-Detect
-→ Analyze
-→ Recall
-→ Recommend
-→ Resolve
-→ Retain
-→ Improve
+The repository has already passed its Golden Path and Phase 4 evaluation.
 
-Primary demonstration:
+Use the actual verified implementation as the basis for the recording.
+
+Do NOT invent a different demo scenario.
+
+==================================================
+2. PRIMARY DEMO STORY
+==================================================
+
+The video must demonstrate:
 
 INC-2026-001
 → SSH brute-force incident
-→ analysis
-→ response
-→ outcome
-→ post-mortem
-→ Hindsight retention
+→ Analyze
+→ Response
+→ Resolution
+→ Post-mortem
+→ Hindsight Retention
 
-Then:
+THEN:
 
 INC-2026-002
-→ similar SSH brute-force incident
-→ Hindsight recall
-→ previous experience
-→ previous outcome
-→ memory-informed recommendation
+→ Similar SSH brute-force incident
+→ Analyze
+→ Hindsight Recall
+→ Previous Incident
+→ Previous Response
+→ Previous Outcome
+→ Memory-informed Recommendation
 
-The repository already contains the implementation from Phases 1–5.
+The core message is:
 
-IMPORTANT:
+The system does not merely analyze each incident independently.
 
-DO NOT rebuild the project.
-
-DO NOT redesign the architecture.
-
-DO NOT add new product features.
-
-DO NOT replace working Hindsight integration.
-
-DO NOT create fake Hindsight functionality.
-
-DO NOT modify working functionality simply for stylistic reasons.
-
-Only make changes necessary for:
-
-- repository cleanliness
-- documentation
-- reproducibility
-- security
-- submission readiness
-- removing development artifacts
-- correcting stale documentation
-- fixing obvious repository-level issues
+It learns from resolved incidents and uses previous experience when handling a later similar incident.
 
 ==================================================
-1. INSPECT THE ENTIRE REPOSITORY
+3. VIDEO LENGTH
 ==================================================
 
-Before changing anything, inspect:
+Target:
 
-- git status
-- git log
-- README.md
-- master.md
-- docs/
-- frontend/
-- backend/
-- scripts/
-- data/
-- package.json
-- requirements.txt
-- .gitignore
-- .env.example files
-- deployment files
-- test files
+2–3 minutes.
 
-Also inspect the repository tree.
+Maximum:
 
-Do not assume documentation matches implementation.
+5 minutes.
 
-Use the actual source code as the source of truth.
+Do NOT make the video unnecessarily long.
 
-Create an internal checklist of:
-
-- what exists
-- what is documented
-- what is missing
-- what is stale
-- what should be removed
-- what must not be touched
+The evaluator should understand the product quickly.
 
 ==================================================
-2. GIT REPOSITORY CLEANLINESS
+4. RECORDING FOLDER
 ==================================================
 
-Run:
+CREATE THIS DIRECTORY IF IT DOES NOT EXIST:
 
-git status
+submission/
+└── video/
 
-Inspect tracked files.
+All recording-related assets for this task MUST be stored inside:
 
-Identify and remove only files that are clearly development artifacts, such as:
+submission/video/
 
-- temporary logs
-- debug output
-- local IDE artifacts
-- generated caches
-- temporary test files
-- screenshots accidentally committed
-- local machine configuration
-- unnecessary build output
-- Python __pycache__
-- node_modules
-- .pytest_cache
-- coverage artifacts
+Do NOT save recordings to:
 
-DO NOT remove:
+Downloads
+Desktop
+Documents
+Temp folders
+random project directories
+system recording folders
 
-- source code
-- tests
-- useful scripts
-- seed/demo data
-- architecture documentation
-- API documentation
-- Hindsight documentation
-- evaluation scripts
-- required deployment configuration
+The repository should contain the final recording assets in:
 
-Before deleting anything, verify it is not used by the project.
+submission/video/
 
 ==================================================
-3. .GITIGNORE REVIEW
+5. REQUIRED VIDEO OUTPUT
 ==================================================
 
-Review .gitignore.
+The preferred final output is:
 
-Ensure it properly excludes:
+submission/video/sentinel-memory-demo.mp4
 
-Frontend:
+If the recording tool/environment supports direct MP4 recording:
 
-node_modules/
-dist/
-.env
-.env.*
-!.env.example
+SAVE THE ACTUAL RECORDING THERE.
 
-Backend:
+If MP4 recording is not supported directly:
 
-__pycache__/
-*.pyc
-.pytest_cache/
-.venv/
-venv/
-.env
+Save the available recording format inside:
 
-General:
+submission/video/
 
-.DS_Store
-Thumbs.db
-coverage/
-*.log
+For example:
 
-IDE:
+submission/video/sentinel-memory-demo.webm
 
-.vscode/
-.idea/
+Then document the format in:
 
-IMPORTANT:
+submission/video/README.md
 
-Do not blindly overwrite the existing .gitignore.
+If conversion to MP4 is possible using tools already available in the environment, convert the final recording to:
 
-Preserve useful project-specific rules.
+submission/video/sentinel-memory-demo.mp4
 
-Do not ignore source files or important documentation.
+Do NOT download random video conversion software.
+
+Do NOT introduce unnecessary dependencies.
 
 ==================================================
-4. SECRET / CREDENTIAL AUDIT
+6. RECORDING ASSETS
 ==================================================
 
-Perform a repository-wide scan for accidentally committed secrets.
+Also create:
 
-Look for:
+submission/video/
 
-- API keys
-- tokens
-- passwords
-- database URLs containing credentials
-- Hindsight credentials
-- LLM API keys
-- private URLs
-- authentication secrets
+├── sentinel-memory-demo.mp4
+├── SCRIPT.md
+├── SHOT_LIST.md
+├── RECORDING_CHECKLIST.md
+└── README.md
 
-Inspect:
+If the actual MP4 cannot be created because the environment does not provide screen recording capability:
 
-.env
-.env.local
-.env.production
-*.env
+DO NOT create a fake video file.
 
-and source files.
+Instead create all other assets and clearly report:
 
-IMPORTANT:
+"Screen capture requires manual recording."
 
-Never expose real secrets in README files.
-
-Never expose secrets through VITE_* variables.
-
-Frontend environment variables are browser-visible.
-
-If you find a real credential:
-
-1. Do NOT print the secret in your final report.
-2. Remove it from the working tree if appropriate.
-3. Replace it with a placeholder.
-4. Document that the credential must be rotated.
-5. Do not claim the repository is clean until resolved.
-
-Do not rewrite Git history unless absolutely necessary.
+The final repository must never contain a fake placeholder video pretending to be the actual demo.
 
 ==================================================
-5. REPOSITORY STRUCTURE
+7. RECORDING SCRIPT
 ==================================================
 
-The final structure should be understandable.
+Create:
 
-Aim for a structure similar to:
+submission/video/SCRIPT.md
 
-sentinel-memory/
-│
-├── frontend/
-│   ├── src/
-│   ├── public/
-│   ├── tests/
-│   ├── package.json
-│   ├── vite.config.ts
-│   └── .env.example
-│
-├── backend/
-│   ├── app/
-│   ├── tests/
-│   ├── requirements.txt
-│   └── .env.example
-│
-├── data/
-│
-├── docs/
-│   ├── ARCHITECTURE.md
-│   ├── API.md
-│   ├── HINDSIGHT.md
-│   └── DEMO.md
-│
-├── scripts/
-│
-├── README.md
-├── master.md
-└── .gitignore
+The script must contain:
 
-Do NOT force the repository into this exact structure if the existing implementation differs.
+- timestamp
+- screen/action
+- voiceover
+- expected result
 
-The actual working architecture takes priority.
+Use approximately this structure:
 
-==================================================
-6. ROOT README
-==================================================
-
-Rewrite or substantially improve README.md if necessary.
-
-The README must allow a technically capable judge to understand the project without opening every source file.
-
-Use this structure:
-
-# Sentinel Memory
-
-One-line description.
-
-## Problem
-
-Explain the cybersecurity incident-response problem.
-
-Keep it concise.
-
-## Solution
-
-Explain what Sentinel Memory does.
-
-Clearly identify:
-
-SOC analyst
-Incident
-AI analysis
-Hindsight memory
-Recommendation
-Resolution
-Learning
-
-## Core Workflow
+--------------------------------------------------
+0:00–0:15
+INTRO
+--------------------------------------------------
 
 Show:
 
-Detect
-→ Analyze
-→ Recall
-→ Recommend
-→ Resolve
-→ Retain
-→ Improve
+Sentinel Memory dashboard.
 
-## Why Hindsight?
+Voiceover should explain:
 
-This section is extremely important.
+"Sentinel Memory is an incident response agent for SOC analysts that learns from previous security incidents using Hindsight."
 
-Explain the difference between:
+Keep it concise.
 
-stateless incident analysis
+--------------------------------------------------
+0:15–0:40
+INCIDENT 1
+--------------------------------------------------
 
-and:
+Open:
 
-experience-informed incident analysis.
+INC-2026-001
 
-Use the actual implementation.
+Show:
+
+- SSH brute-force detection
+- severity
+- evidence
+- affected asset
+- analysis
+
+Voiceover explains what happened.
+
+Do NOT explain every field.
+
+--------------------------------------------------
+0:40–1:00
+RESPONSE
+--------------------------------------------------
+
+Show:
+
+- recommendation
+- analyst-controlled response
+- resolution
+
+Explain briefly:
+
+"The analyst reviews the recommendation and records the actual outcome."
+
+--------------------------------------------------
+1:00–1:15
+LEARNING
+--------------------------------------------------
+
+Show:
+
+- post-mortem
+- outcome
+- learning/retention
+
+Voiceover:
+
+"The important step is that the resolved incident becomes reusable experience."
+
+--------------------------------------------------
+1:15–1:35
+INCIDENT 2
+--------------------------------------------------
+
+Open:
+
+INC-2026-002
+
+Show the similar SSH attack.
 
 Explain:
 
-Incident experience
-→ retention
-→ recall
-→ recommendation context
-→ future incident
+"This incident looks similar, but the system now has experience from the previous incident."
 
-Do NOT make unsupported claims.
+--------------------------------------------------
+1:35–1:55
+HINDSIGHT RECALL
+--------------------------------------------------
 
-Do NOT say Hindsight "guarantees" better results.
+Trigger the actual memory recall.
 
-## Architecture
-
-Include a simple Mermaid diagram if GitHub rendering is appropriate.
-
-For example conceptually:
-
-SOC Analyst
-      ↓
-React Frontend
-      ↓
-FastAPI Backend
-      ↓
-Incident Response Agent
-      ↓
-┌──────────────────────┐
-│ LLM Analysis         │
-│ Hindsight Memory     │
-└──────────────────────┘
-      ↓
-Recommendation
-      ↓
-Analyst-controlled Response
-      ↓
-Outcome / Post-mortem
-      ↓
-Hindsight Retention
-      ↓
-Future Incident Recall
-
-ONLY include components that actually exist.
-
-## Tech Stack
-
-List actual technologies used.
-
-Verify from package files/source code.
-
-Do not list technologies that were planned but never implemented.
-
-## Repository Structure
-
-Explain major directories.
-
-## Setup
-
-Provide exact setup instructions.
-
-Do not invent commands.
-
-Verify every command.
-
-## Environment Variables
-
-Explain required variables.
-
-Never include real secrets.
-
-Use .env.example.
-
-## Running Locally
-
-Document:
-
-Backend startup.
-
-Frontend startup.
-
-Any required supporting services.
-
-## Demo
-
-Explain the primary demo scenario:
+Show:
 
 INC-2026-001
-→ retention
 
-INC-2026-002
-→ recall
-→ recommendation
+Then show:
 
-Link to docs/DEMO.md.
-
-## Testing
-
-Document actual commands.
-
-Example:
-
-npm --prefix frontend run typecheck
-npm --prefix frontend run build
-pytest backend/tests -v
-
-Only include commands that actually work.
-
-## Hindsight Integration
-
-Link to:
-
-docs/HINDSIGHT.md
-
-## Documentation
-
-Link to:
-
-docs/ARCHITECTURE.md
-docs/API.md
-docs/HINDSIGHT.md
-docs/DEMO.md
-
-## Project Status
-
-State that the repository is the final feature-frozen submission build ONLY if that is actually true.
-
-Do not claim deployment is live unless verified.
-
-==================================================
-7. ARCHITECTURE DOCUMENT
-==================================================
-
-Review:
-
-docs/ARCHITECTURE.md
-
-Ensure it reflects the actual implementation.
-
-Document:
-
-1. Frontend
-2. Backend
-3. Incident agent
-4. LLM analysis
-5. Hindsight memory
-6. Recommendation generation
-7. Analyst-controlled response
-8. Post-mortem
-9. Learning/retention
-
-Explain data flow.
-
-Include a Mermaid diagram if useful.
-
-Do not document imaginary services.
-
-Do not call the system "multi-agent" unless multiple agents actually exist.
-
-==================================================
-8. HINDSIGHT DOCUMENT
-==================================================
-
-Review:
-
-docs/HINDSIGHT.md
-
-This is one of the most important submission documents.
-
-It must clearly answer:
-
-### What does Sentinel Memory remember?
-
-Explain the actual retained information.
-
-For example, if implemented:
-
-- incident context
-- investigation
-- root cause
-- response
-- outcome
-- post-mortem
+- previous response
+- previous outcome
 - lesson learned
 
-### When is memory retained?
+This is the most important section of the video.
 
-Explain the actual lifecycle.
+Do NOT rush this section.
 
-### When is memory recalled?
+--------------------------------------------------
+1:55–2:20
+MEMORY-INFORMED RECOMMENDATION
+--------------------------------------------------
 
-Explain the actual recall trigger.
+Generate the recommendation.
 
-### How does recalled memory affect recommendations?
+Show:
 
-Explain the real data flow.
+Current incident evidence
 
-### Why is this different from simple search?
++
 
-Explain only what is supported by the implementation.
+Recalled previous experience
 
-### Example
+↓
 
-Use:
+Recommendation
 
-INC-2026-001
-→ retained experience
+If the backend provides provenance, show it.
 
-INC-2026-002
-→ recall
+Explain:
 
-→ previous response/outcome/lesson
+"The recommendation now incorporates relevant experience from the previous incident."
 
-→ recommendation
+Do not claim unsupported metrics.
 
-Make this concrete.
+--------------------------------------------------
+2:20–2:40
+CLOSING
+--------------------------------------------------
 
-Do NOT invent Hindsight internals.
+Show the overall learning loop:
 
-If the exact Hindsight API behavior is implemented in code, document that implementation accurately.
+Incident
+→ Response
+→ Outcome
+→ Hindsight Memory
+→ Future Recommendation
 
-==================================================
-9. API DOCUMENTATION
-==================================================
+Voiceover:
 
-Review:
-
-docs/API.md
-
-Compare every documented endpoint with the actual backend.
-
-Check:
-
-- method
-- path
-- request
-- response
-- errors
-
-Remove stale endpoints.
-
-Do not document endpoints that do not exist.
-
-Do not claim an endpoint supports functionality it does not support.
+"Sentinel Memory turns incident history into operational experience, allowing future incidents to benefit from what the system has already learned."
 
 ==================================================
-10. DEMO DOCUMENT
+8. SHOT LIST
 ==================================================
 
-Review:
+Create:
 
-docs/DEMO.md
+submission/video/SHOT_LIST.md
 
-It must contain a reproducible judge demo.
+For every shot document:
+
+SHOT 1
+Page:
+Dashboard
+
+Action:
+Open dashboard
+
+What must be visible:
+Active incident / system status
+
+SHOT 2
+Page:
+Incident Detail
+
+Action:
+Open INC-2026-001
+
+What must be visible:
+SSH brute-force evidence
+
+Continue this for the entire demo.
+
+The shot list must make recording repeatable.
+
+==================================================
+9. RECORDING CHECKLIST
+==================================================
+
+Create:
+
+submission/video/RECORDING_CHECKLIST.md
 
 Include:
 
-### Demo prerequisites
+BEFORE RECORDING
 
-Backend
-Frontend
-Database
-Hindsight
-LLM
-Demo data
+[ ] Backend running
+[ ] Frontend running
+[ ] Database available
+[ ] Hindsight available
+[ ] LLM available
+[ ] Demo data seeded
+[ ] INC-2026-001 available
+[ ] INC-2026-002 available
+[ ] Golden Path verified
+[ ] Browser clean
+[ ] No unnecessary tabs
+[ ] No personal information visible
+[ ] Browser zoom appropriate
+[ ] Terminal/debug windows hidden
+[ ] Notifications disabled
+[ ] Recording resolution checked
+[ ] Microphone checked
 
-### Demo reset/seed
+DURING RECORDING
 
-Use the actual project command.
+[ ] Keep cursor controlled
+[ ] Avoid unnecessary scrolling
+[ ] Do not expose credentials
+[ ] Do not expose local file paths
+[ ] Pause briefly on Hindsight recall
+[ ] Clearly show previous incident
+[ ] Clearly show recommendation provenance
+[ ] Keep within 2–3 minutes
 
-### Golden Path
+AFTER RECORDING
 
-Document:
-
-0:00 Problem
-
-0:20 Incident 1
-
-0:50 Resolution
-
-1:10 Incident 2
-
-1:30 Hindsight Recall
-
-1:50 Recommendation
-
-2:10 Learning
-
-Adjust timestamps if the actual flow is different.
-
-### What to show
-
-For every step:
-
-- page
-- action
-- expected result
-- what the presenter should explain
-
-### Troubleshooting
-
-Include practical recovery steps for:
-
-backend unavailable
-Hindsight unavailable
-LLM failure
-empty database
-frontend API configuration
-
-Only include solutions that actually work.
+[ ] Video plays correctly
+[ ] Audio is understandable
+[ ] No accidental personal information
+[ ] No API keys visible
+[ ] No terminal credentials visible
+[ ] Hindsight recall is visible
+[ ] Recommendation is visible
+[ ] Final file saved in submission/video/
+[ ] Filename is correct
 
 ==================================================
-11. ENVIRONMENT DOCUMENTATION
+10. RECORDING ENVIRONMENT
 ==================================================
 
-Review:
+Before recording:
 
-frontend/.env.example
+Run the existing verification:
 
-backend/.env.example
-
-root .env.example if present.
-
-Every required environment variable should have:
-
-- variable name
-- purpose
-- example placeholder
-
-Example:
-
-HINDSIGHT_API_KEY=<your-key>
-
-Never include real credentials.
-
-For frontend:
-
-Clearly distinguish public browser configuration from backend secrets.
-
-==================================================
-12. PACKAGE CLEANUP
-==================================================
-
-Review:
-
-frontend/package.json
-
-backend/requirements.txt
-
-Remove dependencies that are:
-
-- unused
-- leftover from experiments
-- clearly unnecessary
-
-IMPORTANT:
-
-Do not remove a dependency merely because its usage is indirect.
-
-Before removing anything:
-
-Search the repository for its use.
-
-After changes:
-
-Run installation/build/tests.
-
-Do not introduce new dependencies unless necessary for repository correctness.
-
-==================================================
-13. DOCUMENTATION ACCURACY
-==================================================
-
-Search documentation for stale language such as:
-
-- TODO
-- coming soon
-- not implemented
-- planned feature
-- Phase 2
-- Phase 3
-- Phase 4
-- placeholder
-- fake
-- temporary
-
-Do NOT blindly remove these terms.
-
-If they refer to historical development notes that are irrelevant to judges, clean them up.
-
-The final public repository should describe the current implementation.
-
-Do not erase useful development history from files where it matters.
-
-==================================================
-14. REMOVE INTERNAL MACHINE PATHS
-==================================================
-
-Search for paths such as:
-
-C:\project-self-1\
-C:\Users\
-/Users/
-file:///
-local machine paths
-
-Do not expose local development paths in public documentation.
-
-Replace with repository-relative paths.
-
-==================================================
-15. CODE QUALITY REVIEW
-==================================================
-
-Do a lightweight final code review.
-
-Look for:
-
-- obvious dead code
-- obvious debug console logs
-- commented-out experiments
-- unused imports
-- unsafe any
-- hardcoded localhost URLs
-- hardcoded credentials
-- inconsistent naming
-- broken links
-- broken imports
-
-Do not perform a giant refactor.
-
-Only fix clear submission-quality issues.
-
-==================================================
-16. TESTING
-==================================================
-
-After repository cleanup run:
-
-npm --prefix frontend run typecheck
-
-npm --prefix frontend run build
-
-pytest backend/tests -v
-
-python scripts/verify_phase4_evaluation.py
-
-Also run any existing final verification script.
-
-Do NOT weaken tests.
-
-If something fails:
-
-diagnose the real cause
-→ fix it
-→ rerun
-
-==================================================
-17. GITHUB RENDERING
-==================================================
-
-Check README formatting for GitHub.
-
-Ensure:
-
-- headings render correctly
-- code blocks render correctly
-- Mermaid diagrams are valid if used
-- internal links work
-- filenames are correct
-- no broken markdown links
-- no references to nonexistent files
-
-Verify documentation links against the actual repository.
-
-==================================================
-18. FINAL GIT REVIEW
-==================================================
-
-Run:
-
-git status
+python scripts/verify_final_demo.py
 
 Then:
 
-git diff
+python scripts/verify_phase4_evaluation.py
 
-Then inspect the list of changed files.
+Do not record if the Golden Path is broken.
 
-The final repository should contain only intentional changes.
+If the backend is not running:
 
-Do NOT automatically push to main.
+start it using the documented project command.
 
-First report:
+If frontend is not running:
 
-- files changed
-- files deleted
-- files added
-- tests passed
-- security findings
-- documentation changes
+start it using the documented project command.
 
-If the repository workflow already requires direct pushes and the current task permits it, follow the existing project workflow.
-
-Otherwise stop before committing/pushing and report the exact commands needed.
+Do NOT modify application code merely because the demo environment is not started.
 
 ==================================================
-19. FINAL ACCEPTANCE CHECKLIST
+11. SCREEN RECORDING
 ==================================================
 
-Do not finish until you have checked:
+If the current Antigravity environment provides a screen-recording capability:
 
-[ ] Repository structure is understandable
-[ ] README is complete
-[ ] Architecture documentation matches implementation
-[ ] API documentation matches implementation
-[ ] Hindsight documentation matches implementation
-[ ] Demo documentation is reproducible
-[ ] Environment examples are complete
-[ ] No real secrets are committed
-[ ] .gitignore is correct
-[ ] No local machine paths remain
-[ ] No unnecessary debug artifacts remain
-[ ] Frontend typecheck passes
-[ ] Frontend build passes
-[ ] Backend tests pass
-[ ] Hindsight evaluation passes
-[ ] Internal links are valid
-[ ] README commands are verified
-[ ] Demo scenario is documented
-[ ] No new product features were introduced
+USE IT.
+
+Record the actual running application.
+
+Save the recording directly to:
+
+submission/video/sentinel-memory-demo.mp4
+
+If the recording tool requires a different format:
+
+save it in submission/video/
+
+and convert only if a reliable existing tool is available.
+
+If no screen recording capability is available:
+
+DO NOT pretend to record.
+
+Create:
+
+submission/video/RECORDING_REQUIRED.md
+
+containing:
+
+- exact command/startup instructions
+- exact browser URL
+- exact recording sequence
+- exact expected result
+- final output filename
+
+Then clearly state that manual screen capture is required.
 
 ==================================================
-20. FINAL REPORT
+12. VIDEO QUALITY
 ==================================================
 
-At the end provide a structured report:
+Target:
 
-# GitHub Submission Audit
+1080p if available.
 
-## Repository Status
-PASS / BLOCKED
+Otherwise use the highest practical resolution.
 
-## Code Quality
-What was reviewed/fixed.
+The application text must be readable.
 
-## Documentation
-List every documentation file updated.
+Avoid:
 
-## Hindsight Documentation
-Explain what is now documented.
+- excessive zoom
+- tiny UI
+- rapidly moving cursor
+- unnecessary scrolling
+- terminal windows
+- code editor windows
+- browser bookmarks containing personal information
 
-## Security
-State whether secrets/local paths were found.
+The video should focus on the product.
 
-DO NOT print secrets.
+==================================================
+13. AUDIO / VOICEOVER
+==================================================
 
-## Tests
-Show the actual commands and results.
+If the environment supports voice recording:
 
-## Files Changed
-List them.
+record the planned voiceover.
 
-## Files Removed
-List them and why.
+If not:
 
-## Remaining Issues
-Only actual issues.
+prepare the exact voiceover script.
 
-## Git Status
-Clean / changes remaining.
+Do NOT generate robotic filler narration.
 
-## Commit Recommendation
-State whether the repository is ready to commit.
+The narration should be:
+
+- concise
+- technical
+- understandable
+- confident
+- focused on the Hindsight learning loop
+
+Do not over-explain implementation details.
+
+==================================================
+14. HINDSIGHT MUST BE OBVIOUS
+==================================================
+
+The video MUST visibly demonstrate:
+
+1. An incident happens.
+2. The incident is resolved.
+3. The experience is retained.
+4. A later similar incident happens.
+5. Hindsight recalls the previous experience.
+6. The previous response/outcome/lesson is shown.
+7. The recommendation uses that experience.
+
+Do not make Hindsight a background detail.
+
+The evaluator must be able to identify the memory loop from the video alone.
+
+==================================================
+15. NO FAKE DEMO
+==================================================
 
 IMPORTANT:
 
-This task ends here.
+Do NOT:
 
-Do NOT generate:
+- hard-code a fake memory result
+- manually edit screenshots to look like recall
+- fake API responses
+- fabricate recommendation provenance
+- create a video using static mock screens when the live application is available
+- claim Hindsight performed an action that it did not perform
 
-- article
-- social media post
-- video script
-- presentation script
+Use the actual application.
 
-Those will be handled as separate submission tasks.
+The demo must be truthful to the implementation.
 
-The only objective is:
+==================================================
+16. VIDEO FINAL REVIEW
+==================================================
 
-MAKE THE SENTINEL MEMORY GITHUB REPOSITORY CLEAN, DOCUMENTED, REPRODUCIBLE, SECURE, AND JUDGE-READY.
+After recording:
+
+Watch the entire video from beginning to end.
+
+Check:
+
+- Does the story make sense without explanation?
+- Is the Hindsight recall visible?
+- Is the previous incident visible?
+- Is the previous outcome visible?
+- Is the recommendation visible?
+- Is the learning loop clear?
+- Is the video under 5 minutes?
+- Is the audio understandable?
+- Is the application readable?
+- Are there any credentials or personal details visible?
+- Are there accidental dead screens/loading screens?
+
+If the recording contains a serious mistake:
+
+record it again.
+
+Do not edit around a broken core demo.
+
+==================================================
+17. VIDEO README
+==================================================
+
+Create:
+
+submission/video/README.md
+
+Include:
+
+# Sentinel Memory Demo Video
+
+## Final Recording
+
+Filename:
+sentinel-memory-demo.mp4
+
+## Duration
+
+Actual duration after recording.
+
+## Demo Flow
+
+Incident 1
+→ Resolution
+→ Hindsight Retention
+→ Incident 2
+→ Hindsight Recall
+→ Memory-informed Recommendation
+
+## Recording Assets
+
+List:
+
+SCRIPT.md
+SHOT_LIST.md
+RECORDING_CHECKLIST.md
+
+## Recording Status
+
+Use exactly one:
+
+RECORDED AND VERIFIED
+
+or:
+
+MANUAL RECORDING REQUIRED
+
+Do not claim recorded if no recording exists.
+
+==================================================
+18. GIT SAFETY
+==================================================
+
+Before finishing:
+
+git status
+
+Ensure:
+
+- no secrets
+- no temporary recordings outside submission/video/
+- no random screen captures
+- no debug artifacts
+- no personal information
+
+The video assets may be large.
+
+If the repository has a file-size limitation or Git LFS is already configured, inspect the existing setup before committing the video.
+
+Do NOT blindly commit a huge binary if the repository cannot handle it.
+
+If GitHub storage is unsuitable:
+
+keep the recording locally in:
+
+submission/video/
+
+and document the final submission/upload location in README.md.
+
+Do not upload the video to an unrelated external service without instruction.
+
+==================================================
+19. FINAL REPORT
+==================================================
+
+At the end report:
+
+# Demo Video Submission Task
+
+## Recording Status
+RECORDED AND VERIFIED
+or
+MANUAL RECORDING REQUIRED
+
+## Recording Location
+
+Exact repository-relative path.
+
+## Duration
+
+Actual duration.
+
+## Resolution
+
+Actual resolution if available.
+
+## Hindsight Demonstration
+
+Explain exactly where the video shows:
+
+Incident 1
+→ retention
+→ Incident 2
+→ recall
+→ recommendation
+
+## Assets Created
+
+List every file in:
+
+submission/video/
+
+## Verification
+
+State whether:
+
+verify_final_demo.py
+
+passed.
+
+State whether:
+
+verify_phase4_evaluation.py
+
+passed.
+
+## Remaining Action
+
+If recording was not possible:
+
+Give the exact manual action required.
+
+If recording succeeded:
+
+State:
+
+"No further recording action required."
+
+==================================================
+FINAL RULE
+==================================================
+
+This task is ONLY the Demo Video.
+
+Do not start:
+
+- Article
+- Social Media Post
+- Team Content
+- Individual Member Content
+
+Those are separate submission tasks.
+
+The final objective is:
+
+CREATE AND VERIFY A REAL, CLEAR, 2–3 MINUTE DEMO VIDEO OF THE ACTUAL SENTINEL MEMORY APPLICATION, WITH ALL RECORDING ASSETS SAVED UNDER:
+
+submission/video/

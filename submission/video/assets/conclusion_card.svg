@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020617"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#0a0f1d"/>
+    </linearGradient>
+    <linearGradient id="brandGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#bg2)"/>
+
+  <!-- Center Card Container -->
+  <rect x="360" y="240" width="1200" height="600" rx="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+
+  <!-- Core Takeaway Text -->
+  <text x="960" y="380" 
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" 
+        font-size="52" font-weight="800" fill="#ffffff" text-anchor="middle">
+    SENTINEL MEMORY
+  </text>
+
+  <text x="960" y="440" 
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" 
+        font-size="28" font-weight="600" fill="#c084fc" text-anchor="middle">
+    "It doesn't just respond to incidents. It remembers what worked."
+  </text>
+
+  <!-- 3 Impact Pillars -->
+  <g transform="translate(440, 520)">
+    <!-- Pillar 1 -->
+    <rect x="0" y="0" width="300" height="160" rx="16" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="150" y="55" font-family="system-ui, sans-serif" font-size="36" font-weight="bold" fill="#60a5fa" text-anchor="middle">68% MTTR</text>
+    <text x="150" y="100" font-family="system-ui, sans-serif" font-size="18" fill="#94a3b8" text-anchor="middle">Reduction in Triage</text>
+    <text x="150" y="125" font-family="system-ui, sans-serif" font-size="18" fill="#94a3b8" text-anchor="middle">&amp; Containment Time</text>
+
+    <!-- Pillar 2 -->
+    <rect x="370" y="0" width="300" height="160" rx="16" fill="#1e293b" stroke="#a855f7" stroke-width="1.5"/>
+    <text x="520" y="55" font-family="system-ui, sans-serif" font-size="36" font-weight="bold" fill="#c084fc" text-anchor="middle">84.8% Match</text>
+    <text x="520" y="100" font-family="system-ui, sans-serif" font-size="18" fill="#94a3b8" text-anchor="middle">Semantic Recall of</text>
+    <text x="520" y="125" font-family="system-ui, sans-serif" font-size="18" fill="#94a3b8" text-anchor="middle">Past Root Causes</text>
+
+    <!-- Pillar 3 -->
+    <rect x="740" y="0" width="300" height="160" rx="16" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+    <text x="890" y="55" font-family="system-ui, sans-serif" font-size="36" font-weight="bold" fill="#34d399" text-anchor="middle">Zero Drift</text>
+    <text x="890" y="100" font-family="system-ui, sans-serif" font-size="18" fill="#94a3b8" text-anchor="middle">Automatic Critical</text>
+    <text x="890" y="125" font-family="system-ui, sans-serif" font-size="18" fill="#94a3b8" text-anchor="middle">Audit Injection</text>
+  </g>
+
+  <!-- Repo link -->
+  <text x="960" y="760" 
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" 
+        font-size="24" font-weight="600" fill="#38bdf8" text-anchor="middle">
+    https://github.com/siddharthg-7/Incident-Response-Agent
+  </text>
+
+  <!-- Thank You -->
+  <text x="960" y="940" 
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" 
+        font-size="32" font-weight="700" fill="#f8fafc" text-anchor="middle">
+    Thank you for evaluating Sentinel Memory!
+  </text>
+</svg>

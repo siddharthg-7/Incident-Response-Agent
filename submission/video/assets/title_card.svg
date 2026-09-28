@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="accentGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  
+  <!-- Subtle cyber grid pattern -->
+  <g opacity="0.08" stroke="#94a3b8" stroke-width="1">
+    <line x1="0" y1="180" x2="1920" y2="180" />
+    <line x1="0" y1="360" x2="1920" y2="360" />
+    <line x1="0" y1="540" x2="1920" y2="540" />
+    <line x1="0" y1="720" x2="1920" y2="720" />
+    <line x1="0" y1="900" x2="1920" y2="900" />
+    <line x1="320" y1="0" x2="320" y2="1080" />
+    <line x1="640" y1="0" x2="640" y2="1080" />
+    <line x1="960" y1="0" x2="960" y2="1080" />
+    <line x1="1280" y1="0" x2="1280" y2="1080" />
+    <line x1="1600" y1="0" x2="1600" y2="1080" />
+  </g>
+
+  <!-- Ambient Glow Circle -->
+  <circle cx="960" cy="500" r="420" fill="url(#accentGlow)"/>
+
+  <!-- Shield + Brain Center Icon -->
+  <g transform="translate(960, 320) scale(1.6)">
+    <!-- Shield -->
+    <path d="M0 -60 L45 -40 V5 C45 35 25 55 0 65 C-25 55 -45 35 -45 5 V-40 Z" 
+          fill="none" stroke="url(#brandGrad)" stroke-width="5" stroke-linejoin="round" />
+    <!-- Pulse Node -->
+    <circle cx="0" cy="0" r="14" fill="#a855f7" opacity="0.9" />
+    <circle cx="0" cy="0" r="24" fill="none" stroke="#60a5fa" stroke-width="2" opacity="0.5" />
+  </g>
+
+  <!-- Title Text -->
+  <text x="960" y="520" 
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" 
+        font-size="84" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="-1">
+    SENTINEL MEMORY
+  </text>
+
+  <!-- Subtitle Text -->
+  <text x="960" y="600" 
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" 
+        font-size="34" font-weight="500" fill="#94a3b8" text-anchor="middle">
+    A Hindsight-Powered Cybersecurity Incident Response Agent
+  </text>
+
+  <!-- Hackathon Theme Badge -->
+  <g transform="translate(680, 680)">
+    <rect width="560" height="56" rx="28" fill="#1e1b4b" stroke="#7c3aed" stroke-width="2"/>
+    <text x="280" y="36" 
+          font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" 
+          font-size="22" font-weight="600" fill="#c084fc" text-anchor="middle">
+      ★ Theme: AI Agents That Learn Using Hindsight ★
+    </text>
+  </g>
+
+  <!-- Lower Details -->
+  <text x="960" y="820" 
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" 
+        font-size="24" font-weight="400" fill="#64748b" text-anchor="middle">
+    Detect → Analyze → Recall (Hindsight) → Recommend → Resolve → Retain → Improve
+  </text>
+
+  <!-- Footer Tag -->
+  <text x="960" y="980" 
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" 
+        font-size="20" font-weight="500" fill="#475569" text-anchor="middle">
+    github.com/siddharthg-7/Incident-Response-Agent
+  </text>
+</svg>
