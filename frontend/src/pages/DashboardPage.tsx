@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ShieldAlert, Brain, CheckCircle2, Clock, ArrowRight, Play } from 'lucide-react';
 import { api } from '../services/api';
 import { Incident } from '../types';
+import { LoadingState, EmptyState } from '../components/common';
 
 export const DashboardPage: React.FC = () => {
   const [incidents, setIncidents] = useState<Incident[]>([]);
@@ -96,11 +97,12 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-sm text-slate-400">Loading incidents...</div>
+          <LoadingState message="Loading SOC dashboard telemetry..." />
         ) : incidents.length === 0 ? (
-          <div className="p-8 text-center text-sm text-slate-400">
-            No incidents loaded yet. Seed scenarios from <code className="text-slate-300">data/scenarios/</code> or trigger the API.
-          </div>
+          <EmptyState
+            title="No Incidents Reported"
+            description="All systems normal. No active or historical incidents recorded."
+          />
         ) : (
           <div className="divide-y divide-border">
             {incidents.slice(0, 5).map((inc) => (

@@ -1,17 +1,19 @@
-# Sentinel Memory - API Documentation
+# Sentinel Memory - Frontend ↔ Backend API Contract
 
-The Sentinel Memory REST API is built on FastAPI and follows RESTful conventions.
+This document specifies the REST API contract established between the frontend dashboard and the FastAPI backend service.
 
-All response payloads adhere to standard JSON schemas. Errors return RFC 7807 problem details or standard `{ "detail": "error message" }`.
+Base URL: `http://localhost:8000` (Configured via `VITE_API_URL`)
+
+All response bodies are `application/json`. Errors return standard RFC 7807 problem details or `{ "detail": "error message" }`.
 
 ---
 
 ## 1. System Health
 
 ### `GET /health`
-Returns system status, active database connectivity, and Hindsight memory service availability.
-
-**Response (200 OK):**
+- **Purpose**: Verify backend API availability, database connectivity, and Hindsight persistent memory status.
+- **Request Body**: None
+- **Expected Response (200 OK)**:
 ```json
 {
   "status": "healthy",
@@ -20,19 +22,22 @@ Returns system status, active database connectivity, and Hindsight memory servic
   "hindsight": {
     "status": "connected",
     "mode": "mock",
-    "bank_id": "sentinel-incident-memory"
+    "bank_id": "sentinel-incident-memory",
+    "banks_active": 1,
+    "total_memories_indexed": 1
   }
 }
 ```
+- **Error Expectations**:
+  - `503 Service Unavailable`: Database or critical memory service unreachable.
 
 ---
 
 ## 2. Incidents Management
 
 ### `POST /api/incidents`
-Creates and registers a new incoming security incident.
-
-**Request Body:**
+- **Purpose**: Ingest and register a new security alert or incident.
+- **Request Body**:
 ```json
 {
   "title": "SSH Brute Force on Bastion-01",
@@ -49,87 +54,168 @@ Creates and registers a new incoming security incident.
   }
 }
 ```
-
-**Response (201 Created):**
-Returns the created `Incident` object with auto-generated `id`, `status: "NEW"`, `created_at`, etc.
+- **Expected Response (201 Created)**:
+```json
+{
+  "id": "INC-2026-001",
+  "title": "SSH Brute Force on Bastion-01",
+  "description": "High volume of failed authentication attempts from untrusted external IP.",
+  "incident_type": "ssh_brute_force",
+  "severity": "HIGH",
+  "status": "NEW",
+  "source": "198.51.100.45",
+  "target": "bastion-prod-01",
+  "indicators": ["198.51.100.45", "root", "port 22"],
+  "evidence": {
+    "log_sample": "Failed password for root from 198.51.100.45 port 44211 ssh2",
+    "failed_attempts": 14200,
+    "time_window_minutes": 15
+  },
+  "detected_at": "2026-09-28T09:14:02Z",
+  "created_at": "2026-09-28T09:14:02Z",
+  "updated_at": "2026-09-28T09:14:02Z"
+}
+```
+- **Error Expectations**:
+  - `422 Unprocessable Entity`: Validation failure on required fields (`title`, `description`).
 
 ---
 
 ### `GET /api/incidents`
-Retrieves a paginated list of registered incidents.
-
-**Query Parameters:**
-- `status` (optional): Filter by status (`NEW`, `ANALYZING`, `ANALYZED`, `RECOMMENDATION_READY`, `RESOLVED`, `POSTMORTEM_COMPLETE`)
-- `severity` (optional): Filter by severity (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`)
-- `limit` (default: 50): Number of records
-- `offset` (default: 0): Pagination offset
+- **Purpose**: Retrieve a paginated list of registered incidents with optional filtering.
+- **Query Parameters**:
+  - `status` (optional): Filter by state (`NEW`, `ANALYZING`, `ANALYZED`, `RECOMMENDATION_READY`, `IN_PROGRESS`, `RESOLVED`, `POSTMORTEM_COMPLETE`).
+  - `severity` (optional): Filter by severity (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`).
+  - `limit` (optional, default: 50): Page size (1–100).
+  - `offset` (optional, default: 0): Pagination offset.
+- **Request Body**: None
+- **Expected Response (200 OK)**:
+```json
+[
+  {
+    "id": "INC-2026-001",
+    "title": "SSH Brute Force on Bastion-01",
+    "severity": "HIGH",
+    "status": "RECOMMENDATION_READY",
+    "source": "198.51.100.45",
+    "target": "bastion-prod-01",
+    "detected_at": "2026-09-28T09:14:02Z",
+    "created_at": "2026-09-28T09:14:02Z",
+    "updated_at": "2026-09-28T09:16:30Z"
+  }
+]
+```
+- **Error Expectations**:
+  - `400 Bad Request`: Invalid query parameters.
 
 ---
 
 ### `GET /api/incidents/{incident_id}`
-Retrieves full details of a specific incident, including analysis, recommendations, and resolution data.
+- **Purpose**: Retrieve full details of a specific incident including analysis, recommendations, and post-mortem.
+- **Request Body**: None
+- **Expected Response (200 OK)**: Complete `Incident` object.
+- **Error Expectations**:
+  - `404 Not Found`: Incident with specified ID does not exist.
 
 ---
 
 ### `POST /api/incidents/{incident_id}/analyze`
-Triggers AI incident analysis: extracts IOCs, assigns severity, identifies attack pattern, and notes preliminary root causes.
-
-**Response (200 OK):**
+- **Purpose**: Trigger AI threat analysis on incident telemetry (identifies tactics, extracts IOCs, assesses severity).
+- **Request Body**: None (analyzes existing stored incident data)
+- **Expected Response (200 OK)**:
 ```json
 {
-  "incident_id": "INC-2026-001",
+  "id": "INC-2026-001",
   "status": "ANALYZED",
   "analysis": {
     "summary": "Distributed brute force attack targeting SSH root credentials on production bastion.",
-    "tactics": ["MITRE ATT&CK T1110.001 - Password Guessing"],
-    "extracted_iocs": ["198.51.100.45"],
+    "attack_vector": "Public-facing SSH port (22/TCP)",
+    "potential_impact": "Host compromise, lateral movement across internal VPC",
+    "tactics": [
+      "MITRE ATT&CK T1110.001 - Password Guessing",
+      "MITRE ATT&CK T1021.004 - SSH"
+    ],
+    "extracted_iocs": ["198.51.100.45", "root"],
     "assessed_severity": "HIGH",
-    "confidence": 0.95
+    "confidence": 0.94,
+    "analyzed_at": "2026-09-28T09:15:00Z"
   }
 }
 ```
+- **Error Expectations**:
+  - `404 Not Found`: Incident not found.
+
+---
+
+### `GET /api/incidents/{incident_id}/memory`
+- **Purpose**: Retrieve relevant past incident experiences from Hindsight memory bank matching this incident.
+- **Request Body**: None
+- **Expected Response (200 OK)**:
+```json
+[
+  {
+    "source_incident_id": "INC-2026-001",
+    "title": "High Volume SSH Authentication Failure on Bastion-01",
+    "similarity_score": 0.88,
+    "past_root_cause": "Routine OS package upgrade on bastion-prod-01 overwrote /etc/ssh/sshd_config with defaults, inadvertently enabling password authentication.",
+    "past_actions_taken": [
+      "Applied edge firewall DROP rule for IP 198.51.100.45",
+      "Disabled PasswordAuthentication in sshd_config",
+      "Restarted sshd service"
+    ],
+    "past_outcome": "Contained successfully within 12 minutes. Zero unauthorized sessions established.",
+    "lesson_learned": "Enforce automated Ansible compliance check on all perimeter servers every 15 minutes to guarantee PasswordAuthentication no is permanently set."
+  }
+]
+```
+- **Error Expectations**:
+  - `404 Not Found`: Incident not found.
 
 ---
 
 ### `POST /api/incidents/{incident_id}/recommend`
-Executes Hindsight recall against similar prior incidents and synthesizes a tailored response recommendation.
-
-**Response (200 OK):**
+- **Purpose**: Query Hindsight for similar past incidents and synthesize a context-aware response recommendation.
+- **Request Body**: None
+- **Expected Response (200 OK)**:
 ```json
 {
-  "incident_id": "INC-2026-002",
+  "id": "INC-2026-002",
   "status": "RECOMMENDATION_READY",
   "recommendation": {
     "recommended_actions": [
-      "Drop traffic from 203.0.113.88 at edge security group",
-      "Inspect sshd_config on app-prod-04 for disabled PasswordAuthentication",
-      "Verify no unauthorized user accounts were created in /etc/passwd"
+      "Apply immediate perimeter firewall DROP rule for traffic from 203.0.113.88",
+      "CRITICAL AUDIT: Check service configuration on app-prod-04 immediately. In prior incident INC-2026-001, root cause was: Routine OS package upgrade on bastion-prod-01 overwrote /etc/ssh/sshd_config with defaults, inadvertently enabling password authentication.",
+      "Inspect live auth logs on app-prod-04 for any established sessions",
+      "PREVENTION RUNBOOK: Apply lesson learned from INC-2026-001: Enforce automated Ansible compliance check on all perimeter servers every 15 minutes."
     ],
-    "rationale": "Prior incident INC-2026-001 had an identical brute-force pattern where password auth was found enabled after patch deployment. Previous remediation succeeded in 12 min.",
-    "confidence": 0.92,
+    "rationale": "Recommendation enriched by Hindsight memory recall (Match: INC-2026-001, similarity: 88%). Historical incident experienced identical attack pattern.",
+    "confidence": 0.94,
     "recalled_experiences": [
       {
         "source_incident_id": "INC-2026-001",
-        "title": "SSH Brute Force on Bastion-01",
+        "title": "High Volume SSH Authentication Failure on Bastion-01",
         "similarity_score": 0.88,
-        "past_outcome": "Successful containment within 12 minutes. Zero breach.",
-        "lesson_learned": "Enforce Ansible compliance check for sshd_config."
+        "past_root_cause": "Password authentication was inadvertently enabled after OS update",
+        "past_outcome": "Contained successfully within 12 minutes. Zero breach.",
+        "lesson_learned": "Enforce automated Ansible compliance check on sshd_config"
       }
-    ]
+    ],
+    "generated_at": "2026-09-28T09:16:30Z"
   }
 }
 ```
+- **Error Expectations**:
+  - `404 Not Found`: Incident not found.
 
 ---
 
 ### `POST /api/incidents/{incident_id}/resolve`
-Records the analyst's containment and remediation actions, moving status to `RESOLVED`.
-
-**Request Body:**
+- **Purpose**: Record containment and remediation actions executed by the SOC analyst.
+- **Request Body**:
 ```json
 {
   "actions_taken": [
-    "Blocked source IP 198.51.100.45",
+    "Applied edge firewall DROP rule for IP 198.51.100.45",
     "Disabled password authentication in sshd_config",
     "Restarted sshd service"
   ],
@@ -137,21 +223,44 @@ Records the analyst's containment and remediation actions, moving status to `RES
   "resolved_by": "analyst_sarah"
 }
 ```
+- **Expected Response (200 OK)**: Incident with updated `status: "RESOLVED"` and `resolution` object populated.
+- **Error Expectations**:
+  - `404 Not Found`: Incident not found.
+  - `422 Unprocessable Entity`: Missing `actions_taken` or `outcome`.
 
 ---
 
 ### `POST /api/incidents/{incident_id}/postmortem`
-Attaches formal root-cause analysis and lessons learned to the incident.
-
-**Request Body:**
+- **Purpose**: Record post-mortem root-cause analysis and long-term prevention lessons learned.
+- **Request Body**:
 ```json
 {
-  "root_cause": "Configuration drift during baseline OS update enabled password authentication.",
-  "lessons_learned": "Automate sshd configuration checks in daily audit pipeline."
+  "root_cause": "Routine OS package upgrade on bastion-prod-01 overwrote /etc/ssh/sshd_config with defaults, inadvertently enabling password authentication.",
+  "lessons_learned": "Enforce automated Ansible compliance check on all perimeter servers every 15 minutes to guarantee PasswordAuthentication no is permanently set. Deploy fail2ban as an immediate perimeter circuit breaker."
 }
 ```
+- **Expected Response (200 OK)**: Incident with updated `status: "POSTMORTEM_COMPLETE"` and `postmortem` object populated.
+- **Error Expectations**:
+  - `404 Not Found`: Incident not found.
+  - `422 Unprocessable Entity`: Missing `root_cause` or `lessons_learned`.
 
 ---
 
 ### `POST /api/incidents/{incident_id}/learn`
-Explicitly invokes `HindsightService.retain()` to commit the incident's experience capsule into persistent memory.
+- **Purpose**: Explicitly invoke Hindsight RETAIN to commit the incident's experience capsule into persistent memory for future agent recall.
+- **Request Body**: None
+- **Expected Response (200 OK)**:
+```json
+{
+  "status": "success",
+  "detail": "Experience retained in Hindsight",
+  "result": {
+    "status": "retained",
+    "memory_id": "mem-0001",
+    "bank_id": "sentinel-incident-memory"
+  }
+}
+```
+- **Error Expectations**:
+  - `404 Not Found`: Incident not found.
+  - `400 Bad Request`: Incident has not yet been resolved or lacks post-mortem details.

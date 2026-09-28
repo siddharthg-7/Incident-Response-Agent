@@ -1,1030 +1,469 @@
-You are the lead software architect and repository setup engineer for our project.
-
-PROJECT NAME:
-Sentinel Memory
-
-PROJECT:
-A Hindsight-powered Cybersecurity Incident Response Agent.
-
-HACKATHON THEME:
-AI Agents That Learn Using Hindsight
-
-DOMAIN:
-Engineering & DevOps
-
-OFFICIAL PROBLEM:
-Incident Response Agent
+You are working on Sentinel Memory, a cybersecurity Incident Response Agent built for SOC analysts.
 
 IMPORTANT:
-This is NOT a generic cybersecurity chatbot and NOT a generic RAG application.
+This is PHASE 1 ONLY.
 
-The central product concept is:
+Your responsibility in this phase is the FRONTEND FOUNDATION.
+Do not build the complete application yet.
+Do not implement the real AI agent, Hindsight integration, incident analysis, recommendation engine, or production backend.
 
-    Detect → Analyze → Recall → Recommend → Resolve → Retain → Improve
+PROJECT DIRECTION:
+Sentinel Memory follows this core workflow:
 
-The agent must use Hindsight as a core memory system.
+Detect → Analyze → Recall → Recommend → Resolve → Retain → Improve
 
-The agent should:
-- remember previous security incidents
-- remember root causes
-- remember investigation findings
-- remember response actions
-- remember runbooks/actions that were used
-- remember outcomes
-- remember post-mortem lessons
-- recall relevant previous experiences when a similar incident occurs
-- use recalled experience together with current incident evidence
-- generate a context-aware response recommendation
-- retain the outcome of the new incident
-- improve its future recommendations
+The product is a Hindsight-powered cybersecurity incident response assistant for SOC analysts.
 
-The primary persona is:
+The frontend must eventually support:
 
-SOC Analyst / Security Operations Analyst
+1. Dashboard
+2. Incident list
+3. Incident investigation
+4. Hindsight memory visualization
+5. Recommendations
+6. Resolution workflow
+7. Post-mortem / learning
+8. Final demo flow
 
-The MVP workflow is:
+TECH STACK:
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- Modern component architecture
+- REST API integration through a centralized API client
 
-Security Alert
-    ↓
-Incident Analysis
-    ↓
-Hindsight Recall
-    ↓
-Similar Past Incidents
-    ↓
-Response Recommendation
-    ↓
-SOC Analyst Review
-    ↓
-Incident Resolution
-    ↓
-Post-Mortem
-    ↓
-Hindsight Retain
-    ↓
-Future Improvement
-
+PHASE 1 GOAL:
+Create a clean, scalable frontend foundation that can run independently from the backend.
 
 ==================================================
-1. YOUR ROLE
-==================================================
-
-You are performing the INITIAL REPOSITORY SETUP ONLY.
-
-Do NOT attempt to build the entire product now.
-
-Your job is to establish a production-quality foundation so that four developers can clone the repository and work independently in parallel without architectural conflicts.
-
-The repository must be:
-
-- clean
-- understandable
-- modular
-- cloneable
-- environment-safe
-- documented
-- Git-friendly
-- easy for AI coding agents to understand
-- ready for parallel development
-- ready for Hindsight integration
-- ready for frontend/backend/AI/data workstreams
-
-Do not over-engineer.
-
-Do not build unnecessary microservices.
-
-Do not add Kubernetes.
-
-Do not add complex authentication unless required for the foundation.
-
-Do not add autonomous production remediation.
-
-Do not build a complete SIEM.
-
-Do not build malware analysis.
-
-Do not build vulnerability scanning.
-
-Do not build unrelated cybersecurity features.
-
-The MVP must remain focused on incident response and memory.
-
-
-==================================================
-2. FIRST: INSPECT THE CURRENT REPOSITORY
+1. INSPECT THE EXISTING REPOSITORY FIRST
 ==================================================
 
 Before modifying anything:
 
-1. Inspect every existing file and directory.
-2. Determine whether this repository is empty, partially initialized, or already contains code.
-3. Inspect:
-   - package files
-   - requirements/configuration
-   - README
-   - environment files
-   - Git configuration
-   - frontend/backend files
-   - existing scripts
-   - tests
-   - Docker configuration if present
-4. Do NOT delete existing useful work.
-5. Do NOT blindly overwrite existing files.
-6. Reuse existing working infrastructure when appropriate.
-7. If the repository is already partially implemented, preserve working functionality and adapt the structure rather than rebuilding unnecessarily.
+- Inspect the current repository.
+- Determine whether frontend/backend folders already exist.
+- Inspect existing package.json, configuration, README, git status, and source files.
+- Do NOT blindly overwrite existing working code.
+- Preserve anything that is already useful and compatible.
+- If the repository is empty, initialize the structure described below.
 
-After inspection, explain briefly what you found internally before making changes.
-
+Do not create unnecessary files or abstractions.
 
 ==================================================
-3. TARGET ARCHITECTURE
+2. FRONTEND STRUCTURE
 ==================================================
 
-Use a modular monorepo structure unless the existing repository already has a better working structure.
+Create/maintain:
 
-Preferred structure:
-
-sentinel-memory/
-│
-├── apps/
-│   ├── web/
-│   │   ├── src/
-│   │   │   ├── components/
-│   │   │   ├── pages/
-│   │   │   ├── features/
-│   │   │   ├── hooks/
-│   │   │   ├── lib/
-│   │   │   ├── services/
-│   │   │   └── types/
-│   │   ├── public/
-│   │   ├── package.json
-│   │   └── README.md
-│   │
-│   └── api/
-│       ├── app/
-│       │   ├── api/
-│       │   ├── agents/
-│       │   ├── core/
-│       │   ├── db/
-│       │   ├── models/
-│       │   ├── schemas/
-│       │   ├── services/
-│       │   ├── hindsight/
-│       │   └── main.py
-│       ├── tests/
-│       ├── requirements.txt
-│       └── README.md
-│
-├── data/
-│   ├── seed/
-│   ├── scenarios/
-│   └── README.md
-│
-├── docs/
-│   ├── ARCHITECTURE.md
-│   ├── API.md
-│   ├── HINDSIGHT.md
-│   ├── DEVELOPMENT.md
-│   ├── DEMO.md
-│   └── CONTRIBUTING.md
-│
-├── scripts/
-│
+frontend/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── layouts/
+│   ├── features/
+│   ├── services/
+│   ├── hooks/
+│   ├── types/
+│   ├── lib/
+│   ├── assets/
+│   ├── config/
+│   ├── App.tsx
+│   └── main.tsx
+├── public/
+├── tests/
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
 ├── .env.example
-├── .gitignore
-├── README.md
-├── CONTRIBUTING.md
-└── LICENSE
+└── README.md
 
+Keep the architecture simple.
 
-IMPORTANT:
-
-Do not create every file just for the sake of creating files.
-
-Create the directories and foundational files that are genuinely needed.
-
-If the current repository has a different but better structure, preserve it and document the structure.
-
+Do not create dozens of placeholder files just to fill directories.
 
 ==================================================
-4. TECHNOLOGY DIRECTION
+3. FRONTEND SETUP
 ==================================================
 
-Preferred stack:
+Set up:
 
-FRONTEND:
-- React
-- Vite
-- TypeScript
+- React + TypeScript + Vite
 - Tailwind CSS
-- shadcn/ui where useful
+- React Router
+- ESLint if appropriate
+- basic formatting configuration if appropriate
 
-BACKEND:
-- Python
-- FastAPI
+The frontend must run with:
 
-AI:
-- LLM provider abstraction
-- Groq-compatible implementation initially
-- Keep the architecture provider-independent
+cd frontend
+npm install
+npm run dev
 
-MEMORY:
-- Hindsight
-
-DATABASE:
-- PostgreSQL preferred
-- SQLite may be used for local development if necessary
-- Do not make the application tightly coupled to SQLite
-
-REAL-TIME:
-- Do NOT add WebSockets unless actually required.
-- Keep the initial architecture simple.
-
-DEPLOYMENT:
-- Keep the project deployable to common free/low-cost platforms.
-- Do not introduce infrastructure complexity unnecessarily.
-
+Do not introduce unnecessary dependencies.
 
 ==================================================
-5. CRITICAL ARCHITECTURAL PRINCIPLE
+4. ROUTING
 ==================================================
 
-HINDSIGHT MUST BE A FIRST-CLASS SERVICE.
+Create these routes:
 
-Do NOT scatter Hindsight API calls throughout the codebase.
+/dashboard
+/incidents
+/incidents/:id
+/memory
+/learning
 
-Create a clean abstraction such as:
+Create a basic application layout with:
 
-HindsightService
+- Sidebar/navigation
+- Main content area
+- Application branding: Sentinel Memory
+- Responsive structure
 
-with conceptual operations such as:
+The pages can initially contain minimal structured placeholder content.
 
-- retain(...)
-- recall(...)
-- get_similar_incidents(...)
-- record_outcome(...)
-- health_check(...)
-
-The exact implementation should follow the current official Hindsight SDK/API once verified.
-
-Do NOT invent Hindsight API syntax.
-
-If the official SDK/API documentation is available in the environment, inspect it.
-
-If exact API behavior is not available, create a clearly marked adapter/interface rather than fabricating API calls.
-
-The rest of the application should interact with Hindsight through this abstraction.
-
+Do NOT build the polished final UI yet.
 
 ==================================================
-6. CORE DOMAIN MODEL
+5. API ARCHITECTURE
 ==================================================
 
-Establish the initial domain concepts.
+Create a centralized API client.
 
-At minimum:
+Use:
 
-Incident
-
-Fields should conceptually support:
-
-- id
-- title
-- description
-- incident_type
-- severity
-- status
-- detected_at
-- source
-- target
-- indicators
-- evidence
-- analysis
-- root_cause
-- response_actions
-- runbook
-- outcome
-- recurrence
-- lessons_learned
-- created_at
-- updated_at
-
-Do NOT unnecessarily over-normalize the schema during initial setup.
-
-The important concept is that an incident eventually produces an experience that can be retained in Hindsight.
-
-
-==================================================
-7. INCIDENT LIFECYCLE
-==================================================
-
-Define the lifecycle clearly.
-
-Suggested states:
-
-NEW
-↓
-ANALYZING
-↓
-ANALYZED
-↓
-RECOMMENDATION_READY
-↓
-IN_PROGRESS
-↓
-RESOLVED
-↓
-POSTMORTEM_COMPLETE
-
-Allow an appropriate failure state if necessary.
-
-Document the lifecycle.
-
-Do not implement complex workflow machinery yet.
-
-
-==================================================
-8. AGENT ARCHITECTURE
-==================================================
-
-Create conceptual boundaries for:
-
-Incident Analyzer
-
-Responsibilities:
-- classify incident
-- identify severity
-- extract indicators
-- summarize evidence
-- identify possible root cause
-
-Memory Retrieval / Hindsight
-
-Responsibilities:
-- recall relevant prior experiences
-- return similar incidents
-- provide previous response/outcome context
-
-Response Planner
-
-Responsibilities:
-- combine current incident evidence
-- combine recalled experience
-- generate recommended response
-- explain why the recommendation was made
-
-Outcome / Learning
-
-Responsibilities:
-- capture analyst resolution
-- capture outcome
-- capture post-mortem
-- create memory for future incidents
-
-Do not create multiple autonomous agents unless there is a real architectural reason.
-
-For the MVP, one orchestrated incident-response agent is preferable.
-
-
-==================================================
-9. MEMORY DESIGN
-==================================================
-
-Define what gets remembered.
-
-A memory experience should conceptually contain:
-
-CURRENT INCIDENT CONTEXT
-+
-INVESTIGATION
-+
-ROOT CAUSE
-+
-RESPONSE
-+
-RUNBOOK/ACTIONS
-+
-OUTCOME
-+
-POST-MORTEM
-+
-LESSONS LEARNED
-
-The important distinction is:
-
-We do NOT want:
-
-"Incident happened."
-
-We want:
-
-"Incident happened → this was the cause → these actions were taken → this was the result → this is what we learned."
-
-This outcome-oriented memory is central to Sentinel Memory.
-
-
-==================================================
-10. API FOUNDATION
-==================================================
-
-Create a clean initial API contract.
-
-Suggested endpoints:
-
-GET    /health
-
-POST   /api/incidents
-
-GET    /api/incidents
-
-GET    /api/incidents/{incident_id}
-
-POST   /api/incidents/{incident_id}/analyze
-
-POST   /api/incidents/{incident_id}/recommend
-
-GET    /api/incidents/{incident_id}/memory
-
-POST   /api/incidents/{incident_id}/resolve
-
-POST   /api/incidents/{incident_id}/postmortem
-
-POST   /api/incidents/{incident_id}/learn
-
-The implementation can initially contain stubs where functionality belongs to later development phases.
-
-Do NOT fake successful AI/Hindsight behavior.
-
-If an endpoint is not implemented yet, return a clear appropriate response.
-
-
-==================================================
-11. FRONTEND FOUNDATION
-==================================================
-
-Create the basic application shell.
-
-The UI should eventually become a professional SOC-style dashboard.
-
-Initial routes/pages:
-
-/
- /dashboard
- /incidents
- /incidents/:id
- /memory
- /learning
-
-For the initial setup:
-
-- create routing
-- create layout
-- create navigation
-- create placeholder pages
-- establish design tokens
-- establish reusable components
-- establish API client abstraction
-
-Do NOT spend time creating a beautiful final UI yet.
-
-The UI's eventual primary screen will be:
-
-Incident Investigation
-
-It must eventually show:
-
-- current incident
-- severity
-- analysis
-- Hindsight memory matches
-- previous incidents
-- recommendation
-- reasoning/evidence
-- analyst actions
-- resolution
-- learning outcome
-
-
-==================================================
-12. ENVIRONMENT VARIABLES
-==================================================
-
-Create:
-
-.env.example
-
-Include only variables genuinely required.
-
-Conceptually:
-
-HINDSIGHT_API_URL=
-HINDSIGHT_API_KEY=
-
-LLM_API_KEY=
-LLM_MODEL=
-
-DATABASE_URL=
-
-API_BASE_URL=
-
-Never commit:
-
-- API keys
-- secrets
-- tokens
-- passwords
-- real credentials
-
-Ensure .gitignore covers:
-
-.env
-.env.*
-!.env.example
-
-
-==================================================
-13. DATA / DEMO FOUNDATION
-==================================================
-
-Create a small synthetic incident dataset structure.
-
-Do NOT create hundreds of fake records.
-
-Create a few realistic scenarios for development.
-
-Primary scenario:
-
-SSH Brute Force
-
-Example concept:
-
-- multiple failed SSH attempts
-- source IP
-- target server
-- time window
-- authentication logs
-- severity
-- investigation
-- root cause
-- response actions
-- outcome
-- post-mortem
-
-Additional future scenarios may include:
-
-- suspicious authentication
-- port scanning
-- credential stuffing
-- malware alert
-
-But the primary end-to-end demo should remain SSH brute force.
-
-The data should look realistic enough for a professional SOC workflow.
-
-Do not use real people's personal information.
-
-
-==================================================
-14. TESTING FOUNDATION
-==================================================
-
-Set up testing infrastructure.
-
-Backend:
-- pytest
-
-Frontend:
-- appropriate React testing setup if already supported by the chosen stack
-
-At minimum create tests for:
-
-- health endpoint
-- incident model/schema validation
-- incident lifecycle validation
-- API contract
-- Hindsight service interface
-- basic service behavior
-
-Do not write meaningless tests just to increase coverage.
-
-The tests should establish the foundation for later development.
-
-
-==================================================
-15. CODE QUALITY
-==================================================
-
-Configure appropriate formatting/linting.
-
-Python:
-- Ruff if appropriate
-- Black only if necessary
-- type checking if practical
-
-Frontend:
-- ESLint
-- Prettier
-
-Do not add unnecessary tooling.
-
-Add basic scripts so developers can easily run:
-
-- frontend
-- backend
-- tests
-- lint
-- format
-- build
-
-Document these commands.
-
-
-==================================================
-16. DOCKER / LOCAL DEVELOPMENT
-==================================================
-
-If appropriate, provide a simple local development setup.
-
-Potential services:
-
-- PostgreSQL
-- backend
-- frontend
-
-Hindsight should NOT be duplicated or mocked as a fake production service.
-
-If Hindsight Cloud is used, document the required environment variables.
-
-If local Hindsight is practical and officially supported, document that option separately.
-
-Keep the initial setup simple enough that a new team member can clone the repository and start development quickly.
-
-
-==================================================
-17. GIT WORKFLOW FOR FOUR DEVELOPERS
-==================================================
-
-Prepare the repository for four parallel developers.
-
-Recommended branches:
-
-main
-
-feature/hindsight-agent
-feature/backend-api
-feature/soc-dashboard
-feature/data-evaluation
-
-Document that developers should:
-
-1. clone repository
-2. create/update their feature branch
-3. make focused commits
-4. run tests
-5. push branch
-6. create PR
-7. review
-8. merge into main
-
-Do NOT create four actual remote branches unless the current Git environment supports it safely.
-
-Document the branch naming convention instead.
-
-Use clear commit conventions.
+VITE_API_URL
 
 Example:
 
-feat:
-fix:
-refactor:
-test:
-docs:
-chore:
+VITE_API_URL=http://localhost:8000
 
+Create an abstraction so components do NOT directly call fetch() everywhere.
 
-==================================================
-18. TEAM OWNERSHIP DOCUMENT
-==================================================
+For example, conceptually:
 
-Create:
+services/
+  api.ts
 
-docs/TEAM_OWNERSHIP.md
+You may split it further only if genuinely useful.
 
-Define these four workstreams:
+The frontend should eventually communicate with:
 
-MEMBER 1
-AI + Hindsight
-- Hindsight integration
-- LLM
-- agent orchestration
-- recall/retain
-- recommendation logic
+GET /health
+POST /api/incidents
+GET /api/incidents
+GET /api/incidents/{incident_id}
+POST /api/incidents/{incident_id}/analyze
+GET /api/incidents/{incident_id}/memory
+POST /api/incidents/{incident_id}/recommend
+POST /api/incidents/{incident_id}/resolve
+POST /api/incidents/{incident_id}/postmortem
+POST /api/incidents/{incident_id}/learn
 
-MEMBER 2
-Backend
-- FastAPI
-- database
-- API
-- services
-- validation
-
-MEMBER 3
-Frontend
-- React
-- SOC dashboard
-- incident investigation UI
-- memory visualization
-- analyst workflow
-
-MEMBER 4
-Data + Evaluation + Integration
-- realistic incident scenarios
-- testing
-- evaluation
-- integration
-- deployment support
-- demo scenario
-
-Everyone should understand that all four are responsible for integration and code quality.
-
+For Phase 1, do NOT assume these endpoints are already implemented.
 
 ==================================================
-19. DOCUMENTATION
+6. MOCK API MODE
 ==================================================
 
-Create concise but useful documentation.
+The frontend must be independently runnable even if the backend does not exist.
 
-README.md must contain:
+Implement a simple mock mode.
 
-1. Project name
-2. One-line description
-3. Problem
-4. Solution
-5. Core workflow
-6. Architecture
-7. Tech stack
-8. Repository structure
-9. Local setup
-10. Environment variables
-11. Development commands
-12. Team workflow
-13. Hindsight's role
-14. Current implementation status
-15. Roadmap
+Use an environment variable such as:
 
-Create:
+VITE_USE_MOCK_API=true
 
-docs/ARCHITECTURE.md
+When mock mode is enabled:
 
-Explain:
+- API calls should return realistic typed mock data.
+- Pages should be able to render without the backend.
+- Keep mock data centralized.
+- Clearly separate mock behavior from the real API client.
 
-Frontend
-↓
-FastAPI
-↓
-Agent Orchestrator
-↓
-LLM + Hindsight
-↓
-Database
+Do NOT create fake Hindsight behavior that pretends to be real Hindsight.
 
-Create:
-
-docs/HINDSIGHT.md
-
-Explain:
-
-- why Hindsight exists
-- what we retain
-- what we recall
-- when recall occurs
-- when retain occurs
-- how outcomes become future experience
-- how we will demonstrate improvement
-
-Do NOT claim functionality that hasn't been implemented yet.
-
-Clearly distinguish:
-
-Implemented
-Planned
-Future
-
+Mock data is only for frontend development.
 
 ==================================================
-20. ARCHITECTURE DECISION RECORD
+7. TYPES
 ==================================================
 
-Create:
+Create shared frontend TypeScript types for the eventual API contract.
 
-docs/DECISIONS.md
+At minimum define conceptual types for:
 
-Record initial decisions such as:
+- Incident
+- IncidentSeverity
+- IncidentStatus
+- IncidentAnalysis
+- MemoryMatch
+- Recommendation
+- ResponseAction
+- Resolution
+- Postmortem
+- LearningEvent
 
-ADR-001:
-Use FastAPI for backend.
+Keep the types aligned with the Sentinel Memory workflow.
 
-ADR-002:
-Use React/Vite for frontend.
-
-ADR-003:
-Use Hindsight as the persistent agent-memory layer.
-
-ADR-004:
-Keep one primary incident-response agent for MVP.
-
-ADR-005:
-Treat incident outcomes/post-mortems as memory experiences.
-
-ADR-006:
-Keep autonomous remediation out of MVP; recommendations require analyst review.
-
-Keep these concise.
-
+Do not over-engineer the data model yet.
 
 ==================================================
-21. SECURITY BASELINE
+8. INITIAL PAGES
 ==================================================
 
-Because this is a cybersecurity application:
+Create basic versions of:
 
-- never execute arbitrary commands from LLM output
-- never expose secrets to the frontend
-- never place API keys in client-side code
-- validate all external input
-- treat LLM output as untrusted data
-- do not allow the LLM to directly execute production remediation
-- separate recommendation from execution
-- sanitize logs where necessary
-- do not put sensitive credentials in synthetic datasets
+Dashboard:
+- Active incidents
+- Recent incidents
+- Severity summary
+- Memory/learning summary
 
-The MVP should be recommendation-first.
+Incidents:
+- Incident list
+- Basic severity/status
+- Clickable incident
 
+Incident Investigation:
+- Incident information
+- Placeholder sections for:
+  - Analysis
+  - Hindsight memory
+  - Recommendation
+  - Resolution
+
+Memory:
+- Placeholder for similar incidents
+- Past responses
+- Outcomes
+- Lessons learned
+
+Learning:
+- Placeholder learning timeline
+- Retained incident experiences
+
+Again:
+
+These are FOUNDATION screens.
+
+Do NOT spend time making them visually perfect.
 
 ==================================================
-22. DEMO CONTRACT
+9. DESIGN DIRECTION
+==================================================
+
+The final product will be a professional SOC/security operations interface.
+
+For Phase 1:
+
+- Clean
+- Dark/security-oriented but readable
+- Good spacing
+- Clear hierarchy
+- Responsive
+- Avoid excessive gradients
+- Avoid unnecessary animations
+- Avoid "AI slop" visual design
+- Avoid excessive glassmorphism
+- Avoid giant hero sections
+
+The UI should feel like a serious security operations product.
+
+Do not spend significant time on final visual polish yet.
+
+==================================================
+10. FRONTEND-BACKEND CONTRACT
+==================================================
+
+Create/update:
+
+docs/API.md
+
+Document the frontend-facing API contract.
+
+For each endpoint document:
+
+- Method
+- Path
+- Purpose
+- Request body if applicable
+- Expected response shape
+- Error expectations
+
+Do not invent complex backend behavior.
+
+The purpose is to give the backend team a stable contract to implement against.
+
+==================================================
+11. ENVIRONMENT
 ==================================================
 
 Create:
 
-docs/DEMO.md
+frontend/.env.example
 
-Define the future 2–3 minute core demo.
+with appropriate variables, including:
 
-Scenario:
+VITE_API_URL=http://localhost:8000
+VITE_USE_MOCK_API=true
 
-INCIDENT 1
-SSH brute force
-
-Agent analyzes it.
-
-Analyst resolves it.
-
-Post-mortem is created.
-
-Hindsight retains the experience.
-
-Then:
-
-INCIDENT 2
-Similar SSH brute force with different indicators.
-
-Agent analyzes it.
-
-Hindsight recalls previous experience.
-
-UI displays:
-
-"Similar incidents found."
-
-The agent shows:
-
-- previous incident
-- root cause
-- previous response
-- outcome
-- lesson
-
-Then generates a contextual recommendation.
-
-The purpose is to visibly demonstrate:
-
-WITHOUT MEMORY
-vs
-WITH MEMORY
-
-Do not implement the entire demo now.
-
-Document it so every developer builds toward the same target.
-
+Do NOT commit real secrets.
 
 ==================================================
-23. DO NOT DO THESE THINGS
+12. ERROR / LOADING FOUNDATION
 ==================================================
 
-Do NOT:
+Create basic reusable patterns for:
 
-- build unnecessary features
-- create fake Hindsight functionality
-- fabricate API responses
-- fabricate benchmark numbers
-- claim machine learning accuracy without evaluation
-- build autonomous destructive actions
-- build a full SIEM
-- add unnecessary microservices
-- add Kubernetes
-- create a massive dataset
-- create six different workflows
-- focus on animations before functionality
-- write hackathon marketing content now
-- create the article now
-- create LinkedIn content now
-- create the final video now
+- Loading
+- Error
+- Empty state
 
-Development comes first.
+Do not fully polish them.
 
+The goal is to avoid components becoming tightly coupled to API implementation.
 
 ==================================================
-24. DEFINITION OF DONE FOR THIS INITIAL MOVE
+13. CODE QUALITY
 ==================================================
 
-The repository setup is complete only when:
+Follow these rules:
 
-[ ] Repository structure is established
-[ ] Frontend can start
-[ ] Backend can start
-[ ] Health endpoint works
-[ ] Environment configuration exists
-[ ] .env is protected
-[ ] Basic database configuration exists
-[ ] Hindsight abstraction exists
-[ ] Domain models/schemas exist
-[ ] API contract exists
-[ ] Frontend routes exist
-[ ] Basic test infrastructure works
-[ ] Lint/format scripts work
-[ ] README is complete
-[ ] Architecture documentation exists
-[ ] Hindsight documentation exists
-[ ] Team ownership is documented
-[ ] Git workflow is documented
-[ ] Demo scenario is documented
-[ ] No secrets are committed
-[ ] No fake functionality is presented as complete
-
+- TypeScript strictness where practical.
+- Avoid `any` unless absolutely necessary.
+- Keep components reasonably small.
+- Keep API logic outside UI components.
+- Keep mock data outside UI components.
+- Avoid duplicated API logic.
+- Avoid premature abstraction.
+- Use clear naming.
+- Keep imports organized.
+- Do not create unnecessary state management libraries.
+- Do not introduce Redux/Zustand/etc. unless there is an actual Phase 1 requirement.
 
 ==================================================
-25. IMPORTANT EXECUTION RULE
+14. IMPORTANT SCOPE RESTRICTIONS
 ==================================================
 
-Work incrementally.
+DO NOT implement:
 
-Before making a large change:
+- Authentication
+- User roles
+- Production authorization
+- Real Hindsight SDK
+- AI agent
+- LLM calls
+- Incident analysis logic
+- Real recommendation engine
+- Autonomous remediation
+- SIEM integration
+- EDR integration
+- Threat intelligence integration
+- Kubernetes
+- Microservices
+- WebSockets
+- Complex state management
+- Production deployment
 
-1. inspect
-2. reason
-3. modify
-4. test
-5. verify
-
-Do not make huge uncontrolled changes.
-
-After each major setup step, verify that existing functionality still works.
-
-If something already exists and works, preserve it.
-
-If you encounter ambiguity, prefer the smallest architecture that supports the MVP.
-
-If a technology choice conflicts with the existing working repository, explain the conflict and preserve the working system rather than rewriting everything.
-
+Those belong to later phases or the backend workstream.
 
 ==================================================
-26. FINAL OUTPUT AFTER SETUP
+15. INDEPENDENT RUNNABILITY
 ==================================================
 
-When finished, report:
+The frontend must work independently.
+
+After implementation, verify:
+
+cd frontend
+npm install
+npm run dev
+
+The application should open successfully.
+
+Verify all routes:
+
+/dashboard
+/incidents
+/incidents/test-incident
+/memory
+/learning
+
+The frontend must work with:
+
+VITE_USE_MOCK_API=true
+
+without requiring the backend.
+
+==================================================
+16. TESTING / VERIFICATION
+==================================================
+
+Before finishing:
+
+- Run the frontend build.
+- Run TypeScript checks if configured.
+- Run lint if configured.
+- Fix errors.
+- Verify routing.
+- Verify mock mode.
+- Verify there are no broken imports.
+- Verify environment variables are handled safely.
+
+Do not stop at "files created".
+
+Actually verify that the frontend builds.
+
+==================================================
+17. DOCUMENTATION
+==================================================
+
+Update:
+
+frontend/README.md
+
+Include:
+
+- What the frontend is
+- Tech stack
+- Installation
+- Environment variables
+- Running locally
+- Mock mode
+- Project structure
+
+Update root README only if necessary.
+
+==================================================
+18. GIT SAFETY
+==================================================
+
+Do not modify unrelated backend code.
+
+Do not delete existing project functionality without a strong reason.
+
+Do not commit secrets.
+
+At the end, report:
 
 1. What you inspected
-2. What you created
-3. What you changed
-4. Final repository structure
-5. How to run frontend
-6. How to run backend
-7. How to run tests
-8. Environment variables required
-9. Hindsight integration status
-10. What is implemented
-11. What remains for Member 1
-12. What remains for Member 2
-13. What remains for Member 3
-14. What remains for Member 4
-15. Any blockers
-16. Exact next recommended development step
+2. What you implemented
+3. Files created/modified
+4. Routes created
+5. API contract created
+6. Mock mode behavior
+7. Commands used for verification
+8. Build/typecheck/lint results
+9. Any remaining issues
 
-Do not claim the product is complete.
+IMPORTANT FINAL RULE:
 
-The goal of this task is:
+This is PHASE 1.
 
-BUILD THE FOUNDATION.
+Finish the FRONTEND FOUNDATION completely and stop.
 
-The next developers should be able to clone the repository and immediately begin their assigned work without redesigning the architecture.
+Do not automatically start Phase 2.

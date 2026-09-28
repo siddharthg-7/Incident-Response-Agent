@@ -6,11 +6,11 @@ import {
   ArrowLeft, 
   Cpu, 
   Sparkles, 
-  Terminal,
-  AlertTriangle 
+  Terminal
 } from 'lucide-react';
 import { api } from '../services/api';
 import { Incident } from '../types';
+import { LoadingState, ErrorState } from '../components/common';
 
 export const IncidentDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -76,17 +76,22 @@ export const IncidentDetailPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="p-12 text-center text-slate-400">Loading incident details...</div>;
+    return <LoadingState message="Loading incident telemetry and memory context..." />;
   }
 
   if (!incident) {
     return (
-      <div className="p-12 text-center space-y-4">
-        <AlertTriangle className="w-8 h-8 text-warning mx-auto" />
-        <p className="text-slate-300">Incident {id} not found in database.</p>
-        <Link to="/incidents" className="text-primary-light hover:underline text-sm inline-flex items-center gap-1">
-          <ArrowLeft className="w-4 h-4" /> Back to incident queue
-        </Link>
+      <div className="py-8">
+        <ErrorState
+          title="Incident Not Found"
+          message={`Incident record "${id}" could not be retrieved from the active data store.`}
+          onRetry={fetchIncident}
+        />
+        <div className="text-center mt-4">
+          <Link to="/incidents" className="text-primary-light hover:underline text-xs inline-flex items-center gap-1">
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to incident queue
+          </Link>
+        </div>
       </div>
     );
   }

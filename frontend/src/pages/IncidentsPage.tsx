@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertCircle, Shield, ArrowRight, RefreshCw } from 'lucide-react';
+import { Shield, ArrowRight, RefreshCw, AlertTriangle } from 'lucide-react';
 import { api } from '../services/api';
 import { Incident } from '../types';
+import { LoadingState, ErrorState, EmptyState } from '../components/common';
 
 export const IncidentsPage: React.FC = () => {
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const loadData = () => {
     setLoading(true);
+    setError(null);
     api.listIncidents()
       .then(setIncidents)
-      .catch(() => setIncidents([]))
+      .catch((err: any) => setError(err?.message || 'Failed to load incidents'))
       .finally(() => setLoading(false));
   };
 
@@ -40,15 +43,15 @@ export const IncidentsPage: React.FC = () => {
 
       <div className="bg-surface border border-border rounded-xl overflow-hidden shadow-sm">
         {loading ? (
-          <div className="p-12 text-center text-sm text-slate-400">Loading incident queue...</div>
+          <LoadingState message="Loading incident telemetry queue..." />
+        ) : error ? (
+          <ErrorState message={error} onRetry={loadData} />
         ) : incidents.length === 0 ? (
-          <div className="p-12 text-center space-y-3">
-            <AlertCircle className="w-8 h-8 text-slate-500 mx-auto" />
-            <p className="text-slate-300 font-medium">No incidents currently registered in DB</p>
-            <p className="text-xs text-slate-400 max-w-md mx-auto">
-              Run <code className="bg-slate-900 px-2 py-0.5 rounded text-primary-light">python scripts/run_milestone1_demo.py</code> or POST to <code className="bg-slate-900 px-2 py-0.5 rounded text-primary-light">/api/incidents</code>.
-            </p>
-          </div>
+          <EmptyState
+            title="No Incidents in Queue"
+            description="There are currently no active or historical incidents recorded in the store."
+            icon={<AlertTriangle className="w-6 h-6 text-slate-400" />}
+          />
         ) : (
           <table className="w-full text-left border-collapse">
             <thead>
@@ -112,3 +115,5 @@ export const IncidentsPage: React.FC = () => {
     </div>
   );
 };
+
+export default IncidentsPage;

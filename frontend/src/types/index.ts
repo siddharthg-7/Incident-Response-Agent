@@ -1,4 +1,5 @@
 export type Severity = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+export type IncidentSeverity = Severity;
 
 export type IncidentStatus = 
   | 'NEW'
@@ -18,6 +19,7 @@ export interface RecalledExperience {
   past_outcome?: string;
   lesson_learned?: string;
 }
+export type MemoryMatch = RecalledExperience;
 
 export interface IncidentAnalysis {
   summary: string;
@@ -30,6 +32,13 @@ export interface IncidentAnalysis {
   analyzed_at: string;
 }
 
+export interface ResponseAction {
+  action: string;
+  category?: 'containment' | 'eradication' | 'recovery' | 'audit';
+  priority?: number;
+  is_automated?: boolean;
+}
+
 export interface IncidentRecommendation {
   recommended_actions: string[];
   rationale: string;
@@ -37,6 +46,7 @@ export interface IncidentRecommendation {
   recalled_experiences: RecalledExperience[];
   generated_at: string;
 }
+export type Recommendation = IncidentRecommendation;
 
 export interface IncidentResolution {
   actions_taken: string[];
@@ -44,11 +54,25 @@ export interface IncidentResolution {
   resolved_by: string;
   resolved_at: string;
 }
+export type Resolution = IncidentResolution;
 
 export interface IncidentPostMortem {
   root_cause: string;
   lessons_learned: string;
   completed_at: string;
+}
+export type Postmortem = IncidentPostMortem;
+
+export interface LearningEvent {
+  id: string;
+  incident_id: string;
+  title: string;
+  trigger_event: string;
+  retained_memory_id: string;
+  timestamp: string;
+  root_cause: string;
+  lessons_learned: string;
+  outcome_summary: string;
 }
 
 export interface Incident {
