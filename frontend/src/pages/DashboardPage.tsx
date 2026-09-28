@@ -17,6 +17,7 @@ import { LoadingState, EmptyState } from '../components/common';
 export const DashboardPage: React.FC = () => {
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [loading, setLoading] = useState(true);
+  const isMock = api.isMockMode();
 
   useEffect(() => {
     api.listIncidents()
@@ -24,6 +25,10 @@ export const DashboardPage: React.FC = () => {
       .catch(() => setIncidents([]))
       .finally(() => setLoading(false));
   }, []);
+
+  const demoIncidentId = isMock
+    ? 'INC-009'
+    : incidents.find((i) => i.id === 'INC-2026-002')?.id || incidents[0]?.id || 'INC-2026-002';
 
   const activeIncidents = incidents.filter(
     (i) => i.status !== 'RESOLVED' && i.status !== 'POSTMORTEM_COMPLETE'
@@ -56,9 +61,13 @@ export const DashboardPage: React.FC = () => {
 
         {/* Demo Mode Notice */}
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-mono text-purple-300 bg-purple-950/60 border border-purple-800/50 px-2.5 py-1 rounded-lg flex items-center gap-1.5">
-            <Brain className="w-3.5 h-3.5 text-purple-400" />
-            Mock API Mode Active
+          <span className={`text-[11px] font-mono px-2.5 py-1 rounded-lg flex items-center gap-1.5 border ${
+            isMock 
+              ? 'text-purple-300 bg-purple-950/60 border-purple-800/50' 
+              : 'text-accent bg-emerald-950/60 border-emerald-800/50'
+          }`}>
+            <Brain className="w-3.5 h-3.5" />
+            {isMock ? 'Mock API Active' : 'FastAPI Connected'}
           </span>
         </div>
       </div>

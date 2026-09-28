@@ -20,7 +20,9 @@ import { Incident, ActionStatus, IncidentStatus } from '../types';
 import { LoadingState, ErrorState } from '../components/common';
 import { MemoryMatchCard } from '../components/memory/MemoryMatchCard';
 import { MemoryComparisonView } from '../components/memory/MemoryComparisonView';
+import { HindsightExplanationCard } from '../components/memory/HindsightExplanationCard';
 import { RecommendationSection } from '../components/recommendations/RecommendationSection';
+import { InvestigationPipelineStepper } from '../components/incidents/InvestigationPipelineStepper';
 import { ResolutionModal } from '../components/incidents/ResolutionModal';
 import { PostmortemModal } from '../components/incidents/PostmortemModal';
 
@@ -264,8 +266,11 @@ export const IncidentDetailPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Visual Investigation Pipeline Stepper (Phase 4 Evaluator Journey) */}
+      <InvestigationPipelineStepper incident={incident} />
+
       {/* SECTION B & C: EVIDENCE & AI ANALYSIS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div id="section-evidence" className="grid grid-cols-1 lg:grid-cols-2 gap-6 scroll-mt-20">
         {/* SECTION B: INCIDENT EVIDENCE */}
         <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
           <div className="flex items-center justify-between border-b border-border/60 pb-3">
@@ -417,7 +422,7 @@ export const IncidentDetailPage: React.FC = () => {
       </div>
 
       {/* SECTION D: HINDSIGHT MEMORY SECTION ("Relevant Past Incidents") */}
-      <div className="space-y-4">
+      <div id="section-memory" className="space-y-4 scroll-mt-20">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <div className="flex items-center gap-2">
@@ -432,12 +437,15 @@ export const IncidentDetailPage: React.FC = () => {
           <button
             onClick={handleRecallAndRecommend}
             disabled={actionLoading}
-            className="px-3 py-1.5 bg-purple-900/40 hover:bg-purple-900/60 text-purple-300 border border-purple-700/50 rounded-lg text-xs font-medium flex items-center gap-1.5 transition self-start sm:self-auto"
+            className="px-3 py-1.5 bg-purple-900/40 hover:bg-purple-900/60 text-purple-300 border border-purple-700/50 rounded-lg text-xs font-medium flex items-center gap-1.5 transition self-start sm:self-auto cursor-pointer"
           >
             <Brain className="w-3.5 h-3.5" />
             Query Hindsight Memory
           </button>
         </div>
+
+        {/* Hindsight Cognitive Reasoning Breakdown (Phase 4 Explanation) */}
+        <HindsightExplanationCard match={primaryMemoryMatch} incident={incident} />
 
         {incident.recommendation?.recalled_experiences && incident.recommendation.recalled_experiences.length > 0 ? (
           <div className="space-y-4">
@@ -454,7 +462,7 @@ export const IncidentDetailPage: React.FC = () => {
             <button
               onClick={handleRecallAndRecommend}
               disabled={actionLoading}
-              className="px-3.5 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition"
+              className="px-3.5 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition cursor-pointer"
             >
               <Brain className="w-3.5 h-3.5" />
               Recall & Recommend
@@ -465,38 +473,42 @@ export const IncidentDetailPage: React.FC = () => {
 
       {/* SECTION E: MEMORY COMPARISON VIEW (Section 6) */}
       {primaryMemoryMatch && (
-        <MemoryComparisonView
-          currentIncident={incident}
-          matchedExperience={primaryMemoryMatch}
-        />
-      )}
-
-      {/* SECTION F & G: RESPONSE RECOMMENDATION & RESPONSE ACTIONS */}
-      {incident.recommendation ? (
-        <RecommendationSection
-          recommendation={incident.recommendation}
-          onUpdateActionStatus={handleUpdateAction}
-        />
-      ) : (
-        <div className="p-8 bg-surface border border-border rounded-xl text-center space-y-3">
-          <Sparkles className="w-8 h-8 text-slate-500 mx-auto" />
-          <p className="text-xs text-slate-400">
-            No recommendation generated yet.
-          </p>
-          <button
-            onClick={handleRecallAndRecommend}
-            disabled={actionLoading}
-            className="px-3.5 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            Synthesize Recommendation
-          </button>
+        <div id="section-comparison" className="scroll-mt-20">
+          <MemoryComparisonView
+            currentIncident={incident}
+            matchedExperience={primaryMemoryMatch}
+          />
         </div>
       )}
 
+      {/* SECTION F & G: RESPONSE RECOMMENDATION & RESPONSE ACTIONS */}
+      <div id="section-recommendation" className="scroll-mt-20">
+        {incident.recommendation ? (
+          <RecommendationSection
+            recommendation={incident.recommendation}
+            onUpdateActionStatus={handleUpdateAction}
+          />
+        ) : (
+          <div className="p-8 bg-surface border border-border rounded-xl text-center space-y-3">
+            <Sparkles className="w-8 h-8 text-slate-500 mx-auto" />
+            <p className="text-xs text-slate-400">
+              No recommendation generated yet.
+            </p>
+            <button
+              onClick={handleRecallAndRecommend}
+              disabled={actionLoading}
+              className="px-3.5 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              Synthesize Recommendation
+            </button>
+          </div>
+        )}
+      </div>
+
       {/* SECTION H & I: RESOLUTION & POST-MORTEM SUMMARY (WHEN COMPLETED) */}
       {(incident.resolution || incident.postmortem) && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div id="section-resolution" className="grid grid-cols-1 md:grid-cols-2 gap-6 scroll-mt-20">
           {/* Resolution Card */}
           {incident.resolution && (
             <div className="bg-surface border border-emerald-900/40 rounded-xl p-5 space-y-3 text-xs">
@@ -529,13 +541,13 @@ export const IncidentDetailPage: React.FC = () => {
 
           {/* Post-Mortem Card */}
           {incident.postmortem && (
-            <div className="bg-surface border border-purple-900/40 rounded-xl p-5 space-y-3 text-xs">
+            <div id="section-learning" className="bg-surface border border-purple-900/40 rounded-xl p-5 space-y-3 text-xs scroll-mt-20">
               <div className="flex items-center justify-between border-b border-border/60 pb-3">
                 <div className="flex items-center gap-2 text-purple-300 font-semibold">
                   <Brain className="w-4 h-4 text-purple-400" />
                   <span>Retained Post-Mortem Capsule</span>
                 </div>
-                <span className="font-mono text-[10px] text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800/40">
+                <span className="font-mono text-[10px] text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800/40 font-bold">
                   HINDSIGHT RETAINED
                 </span>
               </div>
