@@ -1,469 +1,883 @@
-You are working on Sentinel Memory, a cybersecurity Incident Response Agent built for SOC analysts.
+You are continuing development of Sentinel Memory.
+
+This is PHASE 2 ONLY.
+
+Your responsibility is the FRONTEND implementation of the core SOC incident-response experience.
 
 IMPORTANT:
-This is PHASE 1 ONLY.
-
-Your responsibility in this phase is the FRONTEND FOUNDATION.
-Do not build the complete application yet.
-Do not implement the real AI agent, Hindsight integration, incident analysis, recommendation engine, or production backend.
-
-PROJECT DIRECTION:
-Sentinel Memory follows this core workflow:
-
-Detect → Analyze → Recall → Recommend → Resolve → Retain → Improve
-
-The product is a Hindsight-powered cybersecurity incident response assistant for SOC analysts.
-
-The frontend must eventually support:
-
-1. Dashboard
-2. Incident list
-3. Incident investigation
-4. Hindsight memory visualization
-5. Recommendations
-6. Resolution workflow
-7. Post-mortem / learning
-8. Final demo flow
-
-TECH STACK:
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- React Router
-- Modern component architecture
-- REST API integration through a centralized API client
-
-PHASE 1 GOAL:
-Create a clean, scalable frontend foundation that can run independently from the backend.
+- Phase 1 must already be working.
+- Preserve the Phase 1 architecture.
+- Do not rebuild the project from scratch.
+- Do not implement backend intelligence.
+- Do not implement the real Hindsight SDK.
+- Do not invent Hindsight APIs.
+- Do not move backend responsibilities into the frontend.
+- Use the existing mock API architecture where the backend is not yet available.
 
 ==================================================
-1. INSPECT THE EXISTING REPOSITORY FIRST
+PROJECT CONTEXT
 ==================================================
 
-Before modifying anything:
+Sentinel Memory is a cybersecurity incident-response assistant for SOC analysts.
 
-- Inspect the current repository.
-- Determine whether frontend/backend folders already exist.
-- Inspect existing package.json, configuration, README, git status, and source files.
-- Do NOT blindly overwrite existing working code.
-- Preserve anything that is already useful and compatible.
-- If the repository is empty, initialize the structure described below.
+Core workflow:
 
-Do not create unnecessary files or abstractions.
+Detect
+→ Analyze
+→ Recall
+→ Recommend
+→ Resolve
+→ Retain
+→ Improve
 
-==================================================
-2. FRONTEND STRUCTURE
-==================================================
+The key differentiator is Hindsight-powered memory.
 
-Create/maintain:
+The product should help a SOC analyst answer:
 
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── layouts/
-│   ├── features/
-│   ├── services/
-│   ├── hooks/
-│   ├── types/
-│   ├── lib/
-│   ├── assets/
-│   ├── config/
-│   ├── App.tsx
-│   └── main.tsx
-├── public/
-├── tests/
-├── package.json
-├── vite.config.ts
-├── tsconfig.json
-├── .env.example
-└── README.md
+"What happened?"
 
-Keep the architecture simple.
+"What evidence supports the analysis?"
 
-Do not create dozens of placeholder files just to fill directories.
+"Have we seen something similar before?"
+
+"What did we do last time?"
+
+"What was the outcome?"
+
+"What should we consider doing now?"
+
+The frontend must make this workflow visually obvious.
 
 ==================================================
-3. FRONTEND SETUP
+PHASE 2 OBJECTIVE
 ==================================================
 
-Set up:
+Turn the Phase 1 frontend foundation into a functional SOC analyst interface using realistic mock data.
 
-- React + TypeScript + Vite
-- Tailwind CSS
-- React Router
-- ESLint if appropriate
-- basic formatting configuration if appropriate
+The frontend should now demonstrate:
 
-The frontend must run with:
+1. Incident monitoring
+2. Incident investigation
+3. AI analysis presentation
+4. Hindsight memory matches
+5. Context-aware recommendations
+6. Response actions
+7. Resolution
+8. Post-mortem
+9. Learning history
 
-cd frontend
-npm install
-npm run dev
-
-Do not introduce unnecessary dependencies.
+The application should already feel like a usable product even though the backend intelligence is still being developed.
 
 ==================================================
-4. ROUTING
+1. FIRST INSPECT PHASE 1
 ==================================================
 
-Create these routes:
+Before making changes:
 
-/dashboard
-/incidents
+- Inspect the existing frontend.
+- Inspect current routes.
+- Inspect existing components.
+- Inspect existing services/API client.
+- Inspect TypeScript types.
+- Inspect mock data.
+- Inspect docs/API.md.
+- Check git status.
+
+Do not replace working architecture unnecessarily.
+
+Reuse existing components and abstractions where appropriate.
+
+==================================================
+2. DASHBOARD
+==================================================
+
+Upgrade /dashboard into a SOC-style operational dashboard.
+
+Show:
+
+A. Active Incidents
+
+Display:
+- Incident ID
+- Incident type
+- Severity
+- Status
+- Source
+- Detection time
+- Short description
+
+B. Severity Summary
+
+Show counts for:
+- Critical
+- High
+- Medium
+- Low
+
+C. Recent Incidents
+
+Show recent resolved and active incidents.
+
+D. Memory / Learning Summary
+
+Show useful product-level metrics such as:
+
+- Past incidents retained
+- Similar incidents available
+- Recent learning events
+- Recommendations influenced by memory
+
+These are mock metrics for now.
+
+Do not fabricate claims such as "Hindsight improved response time by 43%" unless represented explicitly as demo/synthetic data.
+
+E. Quick Actions
+
+Provide useful actions such as:
+
+- View active incidents
+- Investigate latest incident
+- View memory
+- View learning history
+
+==================================================
+3. INCIDENTS PAGE
+==================================================
+
+Upgrade /incidents.
+
+The incident list should support:
+
+- Search
+- Severity filtering
+- Status filtering
+- Incident type filtering if useful
+- Sorting by time/severity if useful
+
+Each incident card/row should clearly show:
+
+- ID
+- Type
+- Severity
+- Status
+- Timestamp
+- Short description
+- Investigation state
+
+Clicking an incident should navigate to:
+
 /incidents/:id
-/memory
-/learning
 
-Create a basic application layout with:
+Use realistic cybersecurity incidents.
 
-- Sidebar/navigation
-- Main content area
-- Application branding: Sentinel Memory
-- Responsive structure
+At minimum include:
 
-The pages can initially contain minimal structured placeholder content.
+1. SSH brute-force attack
+2. Suspicious PowerShell execution
+3. Unusual outbound network traffic
+4. Repeated failed authentication
+5. Suspicious privilege escalation
 
-Do NOT build the polished final UI yet.
+The SSH brute-force scenario should be the primary demo scenario.
 
 ==================================================
-5. API ARCHITECTURE
+4. INCIDENT INVESTIGATION PAGE
 ==================================================
 
-Create a centralized API client.
+This is the most important screen in Phase 2.
 
-Use:
+Route:
 
-VITE_API_URL
+/incidents/:id
+
+Design it as an analyst investigation workspace.
+
+Structure the page into clear sections.
+
+--------------------------------------------------
+A. INCIDENT HEADER
+--------------------------------------------------
+
+Show:
+
+- Incident ID
+- Incident type
+- Severity
+- Current status
+- Detection timestamp
+- Affected asset
+- Source
+- Analyst status
+
+Include appropriate actions such as:
+
+Analyze Incident
+View Memory
+Generate Recommendation
+Resolve Incident
+
+These can operate against mock services in Phase 2.
+
+--------------------------------------------------
+B. INCIDENT DETAILS
+--------------------------------------------------
+
+Display:
+
+- What was detected
+- Source/log information
+- Affected host/user
+- IP addresses
+- timestamps
+- indicators
+- relevant evidence
+
+For the SSH brute-force demo, realistic fields may include:
+
+- source IP
+- destination host
+- attempted usernames
+- failed login count
+- time window
+- authentication method
+- geographic information if represented by mock data
+
+Keep everything clearly labeled as incident evidence.
+
+--------------------------------------------------
+C. AI ANALYSIS
+--------------------------------------------------
+
+Create an analysis section.
+
+Show:
+
+- Classification
+- Severity assessment
+- Confidence
+- Indicators
+- Evidence
+- Suspected root cause
+- Investigation summary
+
+Example conceptual output:
+
+Classification:
+Credential Attack / SSH Brute Force
+
+Severity:
+High
+
+Root Cause:
+Repeated external authentication attempts against an exposed SSH service.
+
+Evidence:
+- 437 failed authentication attempts
+- Multiple usernames targeted
+- Same source IP
+- Activity concentrated within 8 minutes
+
+Do not hard-code these exact values everywhere.
+
+Use typed mock data.
+
+Make the UI ready to consume the backend's future structured analysis response.
+
+==================================================
+5. HINDSIGHT MEMORY SECTION
+==================================================
+
+This is the most important product differentiator.
+
+Create a prominent section showing:
+
+"Relevant Past Incidents"
+
+For each memory match show:
+
+- Past incident ID
+- Incident type
+- Similarity/relevance indicator
+- What happened
+- Root cause
+- Response taken
+- Outcome
+- Lesson learned
+- Timestamp
 
 Example:
 
-VITE_API_URL=http://localhost:8000
+Past Incident:
+INC-014
 
-Create an abstraction so components do NOT directly call fetch() everywhere.
+Similar pattern:
+SSH brute-force against internet-facing server
 
-For example, conceptually:
+Previous response:
+Blocked source IP
+Rotated exposed credentials
+Restricted SSH access
+Reviewed authentication logs
 
-services/
-  api.ts
+Outcome:
+No further unauthorized attempts observed.
 
-You may split it further only if genuinely useful.
+Lesson:
+Restricting SSH exposure prevented repeated attempts from reaching the host.
 
-The frontend should eventually communicate with:
+IMPORTANT:
 
-GET /health
-POST /api/incidents
-GET /api/incidents
-GET /api/incidents/{incident_id}
-POST /api/incidents/{incident_id}/analyze
-GET /api/incidents/{incident_id}/memory
-POST /api/incidents/{incident_id}/recommend
-POST /api/incidents/{incident_id}/resolve
-POST /api/incidents/{incident_id}/postmortem
-POST /api/incidents/{incident_id}/learn
+Do not represent similarity as a mysterious AI score without context.
 
-For Phase 1, do NOT assume these endpoints are already implemented.
+Use a clear label such as:
 
-==================================================
-6. MOCK API MODE
-==================================================
+"Relevant past experience"
 
-The frontend must be independently runnable even if the backend does not exist.
+or
 
-Implement a simple mock mode.
+"Memory match"
 
-Use an environment variable such as:
+The UI should communicate:
 
-VITE_USE_MOCK_API=true
+CURRENT INCIDENT
+↓
+HINDSIGHT RECALL
+↓
+RELEVANT PAST EXPERIENCE
+↓
+PREVIOUS RESPONSE + OUTCOME
 
-When mock mode is enabled:
-
-- API calls should return realistic typed mock data.
-- Pages should be able to render without the backend.
-- Keep mock data centralized.
-- Clearly separate mock behavior from the real API client.
-
-Do NOT create fake Hindsight behavior that pretends to be real Hindsight.
-
-Mock data is only for frontend development.
+This is central to the product.
 
 ==================================================
-7. TYPES
+6. MEMORY COMPARISON
 ==================================================
 
-Create shared frontend TypeScript types for the eventual API contract.
+Create a useful visual distinction between:
 
-At minimum define conceptual types for:
+CURRENT INCIDENT
 
-- Incident
-- IncidentSeverity
-- IncidentStatus
-- IncidentAnalysis
-- MemoryMatch
-- Recommendation
-- ResponseAction
-- Resolution
-- Postmortem
-- LearningEvent
+and
 
-Keep the types aligned with the Sentinel Memory workflow.
+PAST EXPERIENCE
 
-Do not over-engineer the data model yet.
+For example:
+
+Current evidence:
+- Same attack pattern
+- Same exposed service
+- Similar source behavior
+
+Past experience:
+- Previous SSH brute-force
+- Response used
+- Outcome
+- Lesson learned
+
+Avoid making this look like a generic vector-search/RAG results page.
+
+The emphasis should be on EXPERIENCE and OUTCOME.
 
 ==================================================
-8. INITIAL PAGES
+7. RESPONSE RECOMMENDATION
 ==================================================
 
-Create basic versions of:
+Create a recommendation section.
 
-Dashboard:
-- Active incidents
-- Recent incidents
-- Severity summary
-- Memory/learning summary
+The recommendation should combine:
 
-Incidents:
-- Incident list
-- Basic severity/status
-- Clickable incident
+Current incident evidence
++
+Relevant Hindsight memory
++
+Previous outcomes
 
-Incident Investigation:
-- Incident information
-- Placeholder sections for:
-  - Analysis
-  - Hindsight memory
-  - Recommendation
-  - Resolution
+Display:
 
-Memory:
-- Placeholder for similar incidents
-- Past responses
+Recommended response
+
+Why this response?
+
+Memory influence
+
+Expected objective
+
+Potential risks
+
+Recommended actions
+
+Example structure:
+
+Recommended Response
+
+1. Block the identified source IP.
+2. Restrict SSH exposure to approved networks.
+3. Review authentication logs for successful access.
+4. Rotate credentials if compromise is suspected.
+
+Why?
+
+"Similar incidents were previously resolved using IP blocking and SSH exposure reduction."
+
+Previous outcome:
+
+"No further authentication attempts were observed after the response."
+
+IMPORTANT:
+
+The UI must make it obvious that the recommendation is influenced by remembered experience.
+
+Do NOT claim that Hindsight caused a recommendation unless the backend later provides that relationship.
+
+For Phase 2 mock mode, label this as:
+
+"Memory-informed recommendation"
+
+==================================================
+8. RESPONSE ACTIONS
+==================================================
+
+Create a response-action section.
+
+Each action should show:
+
+- Action
+- Reason
+- Status
+- Risk level
+- Whether analyst approval is required
+
+Example:
+
+Block source IP
+Status: Recommended
+Risk: Low
+Approval: Required
+
+Restrict SSH exposure
+Status: Recommended
+Risk: Medium
+Approval: Required
+
+Review authentication logs
+Status: Recommended
+Risk: Low
+Approval: Not required
+
+IMPORTANT:
+
+Do NOT execute real security commands.
+
+This product is recommendation-first.
+
+The frontend should represent actions, not actually perform infrastructure changes.
+
+==================================================
+9. RESOLUTION FLOW
+==================================================
+
+Add a resolution section to the investigation page.
+
+Allow the analyst to conceptually:
+
+- Mark action completed
+- Record outcome
+- Resolve incident
+- Add notes
+
+Possible statuses:
+
+Open
+Investigating
+Action Required
+Resolved
+Closed
+
+Use mock API calls where appropriate.
+
+Do not implement backend persistence yourself.
+
+==================================================
+10. POST-MORTEM
+==================================================
+
+Create a basic post-mortem interface.
+
+The analyst should be able to capture:
+
+- What happened?
+- Root cause
+- What was done?
+- What worked?
+- What did not work?
+- Final outcome
+- Lesson learned
+
+This prepares the UI for Phase 3's Hindsight retain flow.
+
+The important conceptual flow is:
+
+Incident
+→ Investigation
+→ Response
+→ Outcome
+→ Post-mortem
+→ Learning
+
+==================================================
+11. MEMORY PAGE
+==================================================
+
+Upgrade /memory.
+
+The page should represent the accumulated experience of the system.
+
+Show:
+
+- Past incidents
+- Incident patterns
+- Responses used
 - Outcomes
 - Lessons learned
 
-Learning:
-- Placeholder learning timeline
-- Retained incident experiences
+Provide search/filtering where useful.
 
-Again:
+Create a timeline or structured experience view.
 
-These are FOUNDATION screens.
+Do NOT make it look like a generic database table.
 
-Do NOT spend time making them visually perfect.
+The product should communicate:
 
-==================================================
-9. DESIGN DIRECTION
-==================================================
-
-The final product will be a professional SOC/security operations interface.
-
-For Phase 1:
-
-- Clean
-- Dark/security-oriented but readable
-- Good spacing
-- Clear hierarchy
-- Responsive
-- Avoid excessive gradients
-- Avoid unnecessary animations
-- Avoid "AI slop" visual design
-- Avoid excessive glassmorphism
-- Avoid giant hero sections
-
-The UI should feel like a serious security operations product.
-
-Do not spend significant time on final visual polish yet.
+"The system remembers what happened and what worked."
 
 ==================================================
-10. FRONTEND-BACKEND CONTRACT
+12. LEARNING PAGE
 ==================================================
 
-Create/update:
+Upgrade /learning.
 
-docs/API.md
+Show a chronological learning timeline.
 
-Document the frontend-facing API contract.
+Example:
 
-For each endpoint document:
+INC-014
+SSH brute-force
+↓
+Response completed
+↓
+Outcome recorded
+↓
+Lesson retained
+↓
+Later incident matched against this experience
 
-- Method
-- Path
-- Purpose
-- Request body if applicable
-- Expected response shape
-- Error expectations
+Show the relationship between:
 
-Do not invent complex backend behavior.
+Incident
+→ Response
+→ Outcome
+→ Lesson
 
-The purpose is to give the backend team a stable contract to implement against.
-
-==================================================
-11. ENVIRONMENT
-==================================================
-
-Create:
-
-frontend/.env.example
-
-with appropriate variables, including:
-
-VITE_API_URL=http://localhost:8000
-VITE_USE_MOCK_API=true
-
-Do NOT commit real secrets.
+This will later become the visible proof that the system improves through experience.
 
 ==================================================
-12. ERROR / LOADING FOUNDATION
+13. COMPONENT ARCHITECTURE
 ==================================================
 
-Create basic reusable patterns for:
+Create reusable components where appropriate.
 
-- Loading
-- Error
-- Empty state
+Possible components:
 
-Do not fully polish them.
+components/
+├── ui/
+├── incidents/
+├── memory/
+├── recommendations/
+├── dashboard/
+└── learning/
 
-The goal is to avoid components becoming tightly coupled to API implementation.
+Do not create components purely for the sake of creating files.
 
-==================================================
-13. CODE QUALITY
-==================================================
-
-Follow these rules:
-
-- TypeScript strictness where practical.
-- Avoid `any` unless absolutely necessary.
-- Keep components reasonably small.
-- Keep API logic outside UI components.
-- Keep mock data outside UI components.
-- Avoid duplicated API logic.
-- Avoid premature abstraction.
-- Use clear naming.
-- Keep imports organized.
-- Do not create unnecessary state management libraries.
-- Do not introduce Redux/Zustand/etc. unless there is an actual Phase 1 requirement.
+Reuse components when there is genuine repetition.
 
 ==================================================
-14. IMPORTANT SCOPE RESTRICTIONS
+14. TYPES
 ==================================================
 
-DO NOT implement:
+Review and extend the Phase 1 TypeScript types.
 
-- Authentication
-- User roles
-- Production authorization
-- Real Hindsight SDK
-- AI agent
+Ensure the frontend has structured types for:
+
+Incident
+IncidentAnalysis
+Evidence
+MemoryMatch
+PastResponse
+Outcome
+Recommendation
+ResponseAction
+Postmortem
+LearningEvent
+
+Do not use `any` as a shortcut.
+
+The types should be designed around the API contract rather than around individual UI components.
+
+==================================================
+15. MOCK DATA
+==================================================
+
+Expand the mock data system.
+
+Create realistic interconnected data.
+
+IMPORTANT:
+
+The data must tell a coherent story.
+
+For example:
+
+INC-001
+SSH brute-force
+→ analyzed
+→ response completed
+→ resolved
+→ post-mortem
+→ lesson retained
+
+Then:
+
+INC-009
+similar SSH brute-force
+→ memory match to INC-001
+→ previous response displayed
+→ memory-informed recommendation displayed
+
+This is critical.
+
+Do not create unrelated random mock records.
+
+The demo must clearly show that Incident 2 benefits from Incident 1's remembered experience.
+
+==================================================
+16. API INTEGRATION ARCHITECTURE
+==================================================
+
+Use the Phase 1 API abstraction.
+
+Do not put fetch calls directly inside pages.
+
+Create appropriate service functions such as:
+
+getIncidents()
+getIncident(id)
+analyzeIncident(id)
+getIncidentMemory(id)
+getRecommendation(id)
+resolveIncident(id)
+createPostmortem(id)
+recordLearning(id)
+
+These should initially work with mock mode.
+
+When the backend becomes available, switching:
+
+VITE_USE_MOCK_API=false
+
+should route requests through the real backend.
+
+Do not change backend implementation.
+
+==================================================
+17. LOADING / ERROR / EMPTY STATES
+==================================================
+
+Every major async section should have sensible states:
+
+Loading
+Error
+Empty
+
+Examples:
+
+"Loading incident analysis..."
+
+"No relevant past experience found."
+
+"Unable to load memory. Try again."
+
+Do not leave blank white screens.
+
+==================================================
+18. UX RULES
+==================================================
+
+The UI should feel like a real SOC product.
+
+Priorities:
+
+1. Information clarity
+2. Incident severity
+3. Evidence visibility
+4. Memory relevance
+5. Recommendation reasoning
+6. Analyst control
+
+Avoid:
+
+- excessive animations
+- excessive gradients
+- huge decorative elements
+- fake futuristic interfaces
+- unnecessary glassmorphism
+- meaningless charts
+- generic AI chatbot layouts
+
+The user should understand the incident within seconds.
+
+==================================================
+19. RESPONSIVE DESIGN
+==================================================
+
+Ensure the major screens work on:
+
+- Desktop
+- Laptop
+- Tablet
+
+The primary target is desktop SOC usage.
+
+Do not spend excessive time optimizing mobile in this phase.
+
+==================================================
+20. DEMO-FIRST REQUIREMENT
+==================================================
+
+The Phase 2 frontend must support this demo story:
+
+STEP 1
+Open Dashboard.
+
+STEP 2
+Open an SSH brute-force incident.
+
+STEP 3
+Show incident evidence.
+
+STEP 4
+Show AI analysis.
+
+STEP 5
+Show relevant past incident.
+
+STEP 6
+Show previous response and outcome.
+
+STEP 7
+Show memory-informed recommendation.
+
+STEP 8
+Show response actions.
+
+STEP 9
+Resolve the incident.
+
+STEP 10
+Create/view the post-mortem.
+
+STEP 11
+Show that the experience becomes part of the learning timeline.
+
+The UI should make this flow possible without jumping through unrelated screens.
+
+==================================================
+21. DO NOT DO THESE THINGS
+==================================================
+
+Do NOT implement:
+
+- Real Hindsight integration
+- Backend AI
 - LLM calls
-- Incident analysis logic
-- Real recommendation engine
+- Real security infrastructure actions
+- Authentication
+- SIEM integrations
+- EDR integrations
+- Threat intelligence APIs
+- Real IP blocking
+- Shell command execution
 - Autonomous remediation
-- SIEM integration
-- EDR integration
-- Threat intelligence integration
-- Kubernetes
-- Microservices
+- Multi-agent architecture
 - WebSockets
-- Complex state management
 - Production deployment
 
-Those belong to later phases or the backend workstream.
+Those are outside this phase.
 
 ==================================================
-15. INDEPENDENT RUNNABILITY
+22. VERIFICATION
 ==================================================
 
-The frontend must work independently.
+After implementation:
 
-After implementation, verify:
+Run:
 
-cd frontend
-npm install
-npm run dev
+npm run build
 
-The application should open successfully.
+Run TypeScript checks if configured.
 
-Verify all routes:
+Run lint if configured.
+
+Run tests if available.
+
+Start the frontend.
+
+Manually verify:
 
 /dashboard
 /incidents
-/incidents/test-incident
+/incidents/<demo-id>
 /memory
 /learning
 
-The frontend must work with:
+Test the complete mock demo flow.
 
-VITE_USE_MOCK_API=true
+Verify:
 
-without requiring the backend.
-
-==================================================
-16. TESTING / VERIFICATION
-==================================================
-
-Before finishing:
-
-- Run the frontend build.
-- Run TypeScript checks if configured.
-- Run lint if configured.
-- Fix errors.
-- Verify routing.
-- Verify mock mode.
-- Verify there are no broken imports.
-- Verify environment variables are handled safely.
-
-Do not stop at "files created".
-
-Actually verify that the frontend builds.
+- no broken routes
+- no console errors
+- no broken imports
+- no TypeScript errors
+- mock API works
+- incident data is coherent
+- memory matches are visible
+- recommendation is visible
+- resolution/post-mortem flow works
+- learning timeline updates in mock mode
 
 ==================================================
-17. DOCUMENTATION
+23. FINAL REPORT
 ==================================================
 
-Update:
+When finished, report:
 
-frontend/README.md
+1. What you changed
+2. Dashboard implementation
+3. Incident investigation implementation
+4. Hindsight memory UI
+5. Recommendation UI
+6. Resolution/post-mortem UI
+7. Learning UI
+8. Mock data scenarios
+9. API service changes
+10. Verification commands/results
+11. Remaining limitations
 
-Include:
+IMPORTANT:
 
-- What the frontend is
-- Tech stack
-- Installation
-- Environment variables
-- Running locally
-- Mock mode
-- Project structure
+This is PHASE 2 ONLY.
 
-Update root README only if necessary.
+Do not start Phase 3 automatically.
 
-==================================================
-18. GIT SAFETY
-==================================================
+Phase 3 will be the real frontend-backend integration and the complete Hindsight learning loop.
 
-Do not modify unrelated backend code.
-
-Do not delete existing project functionality without a strong reason.
-
-Do not commit secrets.
-
-At the end, report:
-
-1. What you inspected
-2. What you implemented
-3. Files created/modified
-4. Routes created
-5. API contract created
-6. Mock mode behavior
-7. Commands used for verification
-8. Build/typecheck/lint results
-9. Any remaining issues
-
-IMPORTANT FINAL RULE:
-
-This is PHASE 1.
-
-Finish the FRONTEND FOUNDATION completely and stop.
-
-Do not automatically start Phase 2.
+Stop after Phase 2 is verified.
