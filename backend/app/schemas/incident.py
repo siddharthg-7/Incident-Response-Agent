@@ -39,7 +39,7 @@ class IncidentAnalysis(BaseModel):
     potential_impact: Optional[str] = None
     tactics: List[str] = Field(default_factory=list)
     extracted_iocs: List[str] = Field(default_factory=list)
-    assessed_severity: Severity
+    assessed_severity: Optional[Severity] = Severity.MEDIUM
     confidence: float = Field(default=0.9, ge=0.0, le=1.0)
     analyzed_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 

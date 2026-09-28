@@ -1,21 +1,25 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Shield, 
   ArrowRight, 
   RefreshCw, 
   Search, 
-  Brain,
-  AlertTriangle
+  Brain, 
+  AlertTriangle, 
+  Plus 
 } from 'lucide-react';
 import { api } from '../services/api';
 import { Incident, Severity } from '../types';
 import { LoadingState, ErrorState, EmptyState } from '../components/common';
+import { IncidentCreateModal } from '../components/incidents/IncidentCreateModal';
 
 export const IncidentsPage: React.FC = () => {
+  const navigate = useNavigate();
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   // Filters & Search
   const [searchTerm, setSearchTerm] = useState('');
@@ -77,6 +81,12 @@ export const IncidentsPage: React.FC = () => {
     });
   }, [incidents, searchTerm, severityFilter, statusFilter, typeFilter, sortBy]);
 
+  const handleCreateIncident = async (payload: any) => {
+    const created = await api.createIncident(payload);
+    loadData();
+    navigate(`/incidents/${created.id}`);
+  };
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Page Header */}
@@ -88,12 +98,19 @@ export const IncidentsPage: React.FC = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow-sm"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            + Ingest Incident
+          </button>
           <Link
-            to="/incidents/INC-009"
+            to="/incidents/INC-2026-002"
             className="px-3.5 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow-sm"
           >
             <Shield className="w-3.5 h-3.5" />
-            Open Demo Case (INC-009)
+            Demo Case (INC-002)
           </Link>
           <button
             onClick={loadData}
@@ -300,6 +317,13 @@ export const IncidentsPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Manual Ingestion Modal (Phase 3) */}
+      <IncidentCreateModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreateIncident}
+      />
     </div>
   );
 };

@@ -54,7 +54,7 @@ cp .env.example .env
 | Variable | Default | Description |
 | :--- | :--- | :--- |
 | `VITE_API_URL` | `http://localhost:8000` | URL of the Sentinel Memory FastAPI backend |
-| `VITE_USE_MOCK_API` | `true` | When `true`, enables completely offline mock data mode |
+| `VITE_USE_MOCK_API` | `false` | When `false`, connects to real backend; when `true`, operates in standalone mock mode |
 
 ## Installation & Setup
 
@@ -65,37 +65,56 @@ npm install
 
 ## Running Locally
 
-To start the Vite development server:
+### Option A: Connected to Live FastAPI Backend (Phase 3 Mode)
 
+1. Start the FastAPI backend:
 ```bash
+python -m uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 8000
+```
+
+2. In a separate terminal, launch the frontend:
+```bash
+cd frontend
 npm run dev
 ```
 
-The application will be accessible at:
-[http://localhost:5173](http://localhost:5173)
+The top navigation bar will display **FastAPI: Connected** (green pulsing badge) and live SQLite incidents (`INC-2026-001`, `INC-2026-002`, `INC-2026-003`).
 
-### Routes Available
+### Option B: Standalone Mock Mode
 
-- `/dashboard` — SOC Overview, active incidents, memory bank statistics.
-- `/incidents` — Incident queue with severity filters, statuses, and recall markers.
-- `/incidents/:id` (e.g. `/incidents/test-incident`) — Detailed incident investigation workspace, root-cause analysis, recalled memories, and response recommendations.
-- `/memory` — Retained experience capsules in Sentinel Incident Memory.
-- `/learning` — Evolution matrix demonstrating agent performance without memory vs. with memory.
+Set `VITE_USE_MOCK_API=true` in `frontend/.env` to run 100% offline with zero external dependencies.
 
-## Mock Mode Behavior
+---
 
-When `VITE_USE_MOCK_API=true`:
-- The frontend operates **100% offline** without requiring the Python FastAPI backend or external databases.
-- Synthetic incidents, recalled memory items, response recommendations, and resolution workflows load deterministically.
-- Arbitrary route IDs such as `/incidents/test-incident` or custom incident IDs automatically resolve to realistic investigation workspace data.
-- Safe toggling: Set `VITE_USE_MOCK_API=false` to route all calls directly to the live backend REST API at `VITE_API_URL`.
+## Phase 3 End-to-End Loop Demonstration
+
+Sentinel Memory's core value is proven through the complete memory retention & recall cycle:
+
+1. **Step 1 — Ingest / Select Incident 1 (`INC-2026-001`)**:
+   - Navigate to `/incidents/INC-2026-001`.
+   - Execute **Resolve**: Record containment actions (IP firewall drop, credential revocation).
+   - Execute **Post-Mortem**: Document root cause and preventive lessons.
+   - Click **Learn & Retain in Memory**: The resolution and post-mortem are retained into Hindsight memory.
+2. **Step 2 — Investigate Incident 2 (`INC-2026-002`)**:
+   - Navigate to `/incidents/INC-2026-002` (a subsequent SSH brute force on `app-prod-04`).
+   - Click **Analyze Incident**: Evaluates threat tactics and observables.
+   - Click **Generate Recommendations**: Hindsight automatically recalls the experience from `INC-2026-001` (84%+ similarity match).
+   - Observe **Memory-Informed Recommendations**: Notice the direct injection of previous outcomes, `CRITICAL AUDIT` warning, and `PREVENTION RUNBOOK` derived from `INC-2026-001`.
+3. **Step 3 — Inspect Memory Bank & Timeline**:
+   - Navigate to `/memory` to view live memory capsules.
+   - Navigate to `/learning` to view the chronological learning timeline and Before vs. After metrics.
+
+---
 
 ## Quality & Build Verification
 
 ```bash
-# Typecheck and production bundle build:
+# Typecheck TypeScript code:
+npm run typecheck
+
+# Production bundle build:
 npm run build
 
-# Lint verification:
-npm run lint
+# Run automated end-to-end backend validation script:
+python scripts/verify_phase3_loop.py
 ```

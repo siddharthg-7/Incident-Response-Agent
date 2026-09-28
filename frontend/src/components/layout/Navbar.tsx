@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Shield, Brain, Activity } from 'lucide-react';
+import { Shield, Brain, Wifi, WifiOff } from 'lucide-react';
 import { api } from '../../services/api';
-import { SystemHealth } from '../../types';
 
 export const Navbar: React.FC = () => {
-  const [health, setHealth] = useState<SystemHealth | null>(null);
+  const [backendConnected, setBackendConnected] = useState<boolean | null>(null);
+  const isMock = api.isMockMode();
 
   useEffect(() => {
     api.getHealth()
-      .then(setHealth)
-      .catch(() => setHealth(null));
+      .then((h) => {
+        setBackendConnected(h.database?.includes('connected') || h.status === 'healthy');
+      })
+      .catch(() => {
+        setBackendConnected(false);
+      });
   }, []);
 
   return (
@@ -29,22 +33,37 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         {/* Memory status indicator */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-900/80 border border-slate-800 text-xs">
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-xs">
           <Brain className="w-4 h-4 text-purple-400" />
           <span className="text-slate-400 font-mono">Memory Bank:</span>
-          <span className="text-slate-200 font-medium">sentinel-incident-memory</span>
+          <span className="text-purple-300 font-mono font-medium">sentinel-incident-memory</span>
           <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
         </div>
 
-        {/* Backend health pill */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-900/80 border border-slate-800 text-xs">
-          <Activity className="w-4 h-4 text-accent" />
-          <span className="text-slate-400 font-mono">API:</span>
-          <span className={health?.status === 'healthy' ? 'text-accent font-medium' : 'text-warning font-medium'}>
-            {health?.status || 'connecting...'}
-          </span>
+        {/* Backend health status (Section 5) */}
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-xs">
+          {isMock ? (
+            <>
+              <span className="w-2 h-2 rounded-full bg-purple-400" />
+              <span className="text-slate-400 font-mono">Mode:</span>
+              <span className="text-purple-300 font-medium font-mono">Mock API</span>
+            </>
+          ) : backendConnected ? (
+            <>
+              <Wifi className="w-3.5 h-3.5 text-accent" />
+              <span className="text-slate-400 font-mono">FastAPI:</span>
+              <span className="text-accent font-medium font-mono">Connected</span>
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+            </>
+          ) : (
+            <>
+              <WifiOff className="w-3.5 h-3.5 text-warning" />
+              <span className="text-slate-400 font-mono">FastAPI:</span>
+              <span className="text-warning font-medium font-mono">Backend Unavailable</span>
+            </>
+          )}
         </div>
       </div>
     </header>

@@ -25,7 +25,8 @@
   "analysis": {
     "summary": "External threat actor executing distributed dictionary attack against edge bastion SSH service.",
     "attack_vector": "Public-facing SSH port 22",
-    "potential_impact": "Unauthorized shell access to production perimeter network"
+    "potential_impact": "Unauthorized shell access to production perimeter network",
+    "assessed_severity": "HIGH"
   },
   "resolution": {
     "resolved_at": "2026-09-25T14:34:18Z",
