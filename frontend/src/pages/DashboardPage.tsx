@@ -168,20 +168,20 @@ export const DashboardPage: React.FC = () => {
             <span className="px-2 py-0.5 rounded bg-primary text-white text-[11px] font-mono font-semibold">
               PRIMARY DEMO SCENARIO
             </span>
-            <h3 className="text-base font-semibold text-white">Investigate SSH Brute-Force (INC-009)</h3>
+            <h3 className="text-base font-semibold text-white">Investigate SSH Brute-Force ({demoIncidentId})</h3>
           </div>
           <p className="text-sm text-slate-300">
-            Follow the complete loop: Telemetry Evidence → AI Analysis → Hindsight Recall (INC-001) → Contextual Recommendation → Resolution & Retain.
+            Follow the complete loop: Telemetry Evidence → AI Analysis → Hindsight Recall ({demoIncidentId === 'INC-009' ? 'INC-001' : 'INC-2026-001'}) → Contextual Recommendation → Resolution & Retain.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
           <Link
-            to="/incidents/INC-009"
+            to={`/incidents/${demoIncidentId}`}
             className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold transition flex items-center gap-2 shadow-sm"
           >
             <Play className="w-3.5 h-3.5" />
-            Investigate INC-009
+            Investigate {demoIncidentId}
           </Link>
           <Link
             to="/memory"

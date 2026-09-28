@@ -106,6 +106,22 @@ Sentinel Memory's core value is proven through the complete memory retention & r
 
 ---
 
+## Phase 4 Product Polish, Reliability & Evaluation
+
+### Evaluator Journey Architecture
+Every incident investigation screen (`/incidents/:id`) renders an interactive 6-stage visual pipeline:
+
+$$\text{Current Incident} \longrightarrow \text{Past Experience} \longrightarrow \text{Previous Outcome} \longrightarrow \text{Recommendation} \longrightarrow \text{Analyst Action} \longrightarrow \text{New Learning}$$
+
+1. **Current Incident**: Ingested attack telemetry, target asset, observables, and AI threat classification.
+2. **Past Experience**: Hindsight semantic vector recall against bank `sentinel-incident-memory` with exact cosine match score.
+3. **Previous Outcome**: Root cause, validated mitigation actions, and proven containment result (Zero Breach).
+4. **Recommendation**: Adaptive response synthesized with memory provenance, highlighting `CRITICAL AUDIT` and `PREVENTION RUNBOOK` directives.
+5. **Analyst Action**: Interactive SOC controls for one-click action approval and execution tracking.
+6. **New Learning**: Post-mortem lessons committed directly back into the organizational memory bank.
+
+---
+
 ## Quality & Build Verification
 
 ```bash
@@ -117,4 +133,8 @@ npm run build
 
 # Run automated end-to-end backend validation script:
 python scripts/verify_phase3_loop.py
+
+# Run Phase 4 reliability & evaluation test suite:
+python scripts/verify_phase4_evaluation.py
 ```
+

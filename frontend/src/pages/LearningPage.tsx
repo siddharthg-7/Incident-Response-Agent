@@ -16,6 +16,8 @@ import { LoadingState } from '../components/common';
 export const LearningPage: React.FC = () => {
   const [timeline, setTimeline] = useState<LearningEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const isMock = api.isMockMode();
+  const demoTargetId = isMock ? 'INC-009' : 'INC-2026-002';
 
   useEffect(() => {
     api.getLearningTimeline()
@@ -41,11 +43,11 @@ export const LearningPage: React.FC = () => {
         </div>
 
         <Link
-          to="/incidents/INC-009"
+          to={`/incidents/${demoTargetId}`}
           className="px-3.5 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow-sm shrink-0"
         >
           <Play className="w-3.5 h-3.5" />
-          Test Experience on INC-009
+          Test Experience on {demoTargetId}
         </Link>
       </div>
 
