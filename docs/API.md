@@ -8,7 +8,23 @@ All response bodies are `application/json`. Errors return standard RFC 7807 prob
 
 ---
 
-## 1. System Health
+## 1. System Information & Health
+
+### `GET /`
+- **Purpose**: Retrieve API service metadata, operational status, and interactive documentation URLs.
+- **Request Body**: None
+- **Expected Response (200 OK)**:
+```json
+{
+  "service": "Sentinel Memory API",
+  "description": "Hindsight-powered Incident Response Agent",
+  "status": "operational",
+  "docs_url": "/docs",
+  "health_url": "/health"
+}
+```
+
+---
 
 ### `GET /health`
 - **Purpose**: Verify backend API availability, database connectivity, and Hindsight persistent memory status.

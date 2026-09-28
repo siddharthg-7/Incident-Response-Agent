@@ -86,7 +86,7 @@ Set `VITE_USE_MOCK_API=true` in `frontend/.env` to run 100% offline with zero ex
 
 ---
 
-## Phase 3 End-to-End Loop Demonstration
+## End-to-End Memory Loop Demonstration
 
 Sentinel Memory's core value is proven through the complete memory retention & recall cycle:
 
@@ -106,9 +106,8 @@ Sentinel Memory's core value is proven through the complete memory retention & r
 
 ---
 
-## Phase 4 Product Polish, Reliability & Evaluation
+## Evaluator Journey Architecture
 
-### Evaluator Journey Architecture
 Every incident investigation screen (`/incidents/:id`) renders an interactive 6-stage visual pipeline:
 
 $$\text{Current Incident} \longrightarrow \text{Past Experience} \longrightarrow \text{Previous Outcome} \longrightarrow \text{Recommendation} \longrightarrow \text{Analyst Action} \longrightarrow \text{New Learning}$$
@@ -131,10 +130,10 @@ npm run typecheck
 # Production bundle build:
 npm run build
 
-# Run automated end-to-end backend validation script:
-python scripts/verify_phase3_loop.py
+# Run automated Golden Path validation script:
+python ../scripts/verify_final_demo.py
 
-# Run Phase 4 reliability & evaluation test suite:
-python scripts/verify_phase4_evaluation.py
+# Run reliability & evaluation benchmark suite:
+python ../scripts/verify_phase4_evaluation.py
 ```
 

@@ -25,9 +25,7 @@ cp .env.example .env
 
 ### Step 2: Install Backend Dependencies
 ```bash
-cd apps/api
-pip install -r requirements.txt
-cd ../..
+pip install -r backend/requirements.txt
 ```
 
 ### Step 3: Run the Milestone 1 Demo (Verify Everything Works!)
@@ -43,9 +41,9 @@ This runs the full **Incident 1 → Analysis → Retain → Incident 2 → Recal
 ### Running Backend API Server
 ```bash
 # From workspace root:
-npm run dev:api
+npm run dev:backend
 # Or directly via uvicorn:
-python -m uvicorn app.main:app --app-dir apps/api --reload --port 8000
+python -m uvicorn app.main:app --app-dir backend --reload --port 8000
 ```
 - Interactive Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
 - Health Check: [http://localhost:8000/health](http://localhost:8000/health)
@@ -53,12 +51,12 @@ python -m uvicorn app.main:app --app-dir apps/api --reload --port 8000
 ### Running Frontend Dashboard
 ```bash
 # Install frontend dependencies (first time only)
-cd apps/web
+cd frontend
 npm install
-cd ../..
+cd ..
 
 # Start Vite dev server:
-npm run dev:web
+npm run dev:frontend
 ```
 - Open [http://localhost:5173](http://localhost:5173) in your browser.
 
@@ -68,7 +66,7 @@ npm run dev:web
 
 Run the test suite:
 ```bash
-pytest apps/api/tests -v
+pytest backend/tests -v
 ```
 
 All tests run using the decoupled `MockHindsightAdapter`, ensuring 100% offline test reliability with zero external service requirements.

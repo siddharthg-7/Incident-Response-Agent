@@ -85,6 +85,16 @@ async def reset_and_seed_demo():
 
         await session.commit()
 
+    # If backend/sentinel_memory.db exists, sync it for consistency across any startup CWD
+    root_db = ROOT_DIR / "sentinel_memory.db"
+    backend_db = ROOT_DIR / "backend" / "sentinel_memory.db"
+    if root_db.exists():
+        import shutil
+        try:
+            shutil.copy2(str(root_db), str(backend_db))
+        except Exception:
+            pass
+
     print("\n[✓] Demo reset successfully completed!")
     print("  Ready for Golden Path live presentation:")
     print("    • Step 1: Open INC-2026-001 -> Resolve -> Post-Mortem -> Retain")
