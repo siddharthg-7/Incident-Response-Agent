@@ -1,0 +1,26 @@
+{
+  "id": "INC-2026-002",
+  "title": "Spike in Failed SSH Logins on App-Prod-04",
+  "description": "Continuous stream of rejected SSH connection requests originating from external IP targeting app-prod-04 infrastructure node.",
+  "incident_type": "ssh_brute_force",
+  "severity": "HIGH",
+  "status": "NEW",
+  "detected_at": "2026-09-28T09:14:02Z",
+  "source": "203.0.113.88",
+  "target": "app-prod-04 (10.0.2.44)",
+  "indicators": [
+    "203.0.113.88",
+    "admin",
+    "root",
+    "port 22",
+    "sshd",
+    "password_auth_attempt"
+  ],
+  "evidence": {
+    "log_source": "/var/log/auth.log",
+    "sample_log": "Sep 28 09:14:01 app-prod-04 sshd[12990]: Failed password for invalid user admin from 203.0.113.88 port 51240 ssh2",
+    "failed_attempts": 8600,
+    "time_window_minutes": 10,
+    "mitre_technique": "T1110.001 - Password Guessing"
+  }
+}

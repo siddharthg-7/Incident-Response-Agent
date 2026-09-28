@@ -1,0 +1,23 @@
+{
+  "name": "sentinel-memory",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sentinel Memory: A Hindsight-powered Cybersecurity Incident Response Agent",
+  "scripts": {
+    "dev:web": "npm --prefix apps/web run dev",
+    "build:web": "npm --prefix apps/web run build",
+    "dev:api": "python -m uvicorn app.main:app --app-dir apps/api --reload --port 8000",
+    "test:api": "pytest apps/api/tests -v",
+    "demo:milestone1": "python scripts/run_milestone1_demo.py"
+  },
+  "keywords": [
+    "cybersecurity",
+    "incident-response",
+    "hindsight",
+    "ai-agent",
+    "soc",
+    "long-term-memory"
+  ],
+  "author": "Sentinel Memory Team",
+  "license": "MIT"
+}

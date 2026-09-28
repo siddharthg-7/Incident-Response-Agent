@@ -1,0 +1,45 @@
+{
+  "id": "INC-2026-001",
+  "title": "High Volume SSH Authentication Failure on Bastion-01",
+  "description": "Over 14,000 failed SSH login attempts detected from untrusted external IP within a 15-minute window targeting privileged root account.",
+  "incident_type": "ssh_brute_force",
+  "severity": "HIGH",
+  "status": "POSTMORTEM_COMPLETE",
+  "detected_at": "2026-09-25T14:22:10Z",
+  "source": "198.51.100.45",
+  "target": "bastion-prod-01 (10.0.1.15)",
+  "indicators": [
+    "198.51.100.45",
+    "root",
+    "port 22",
+    "sshd",
+    "password_auth_attempt"
+  ],
+  "evidence": {
+    "log_source": "/var/log/auth.log",
+    "sample_log": "Sep 25 14:22:08 bastion-prod-01 sshd[38411]: Failed password for root from 198.51.100.45 port 49122 ssh2",
+    "failed_attempts": 14200,
+    "time_window_minutes": 15,
+    "mitre_technique": "T1110.001 - Password Guessing"
+  },
+  "analysis": {
+    "summary": "External threat actor executing distributed dictionary attack against edge bastion SSH service.",
+    "attack_vector": "Public-facing SSH port 22",
+    "potential_impact": "Unauthorized shell access to production perimeter network"
+  },
+  "resolution": {
+    "resolved_at": "2026-09-25T14:34:18Z",
+    "resolved_by": "analyst_sarah",
+    "actions_taken": [
+      "Applied edge firewall DROP rule for IP 198.51.100.45",
+      "Audited /etc/ssh/sshd_config and discovered PasswordAuthentication was set to yes",
+      "Modified sshd_config: set PasswordAuthentication no and PubkeyAuthentication yes",
+      "Restarted sshd service and validated existing open sessions"
+    ],
+    "outcome": "Contained successfully within 12 minutes. Zero unauthorized sessions established. Password authentication disabled across bastion fleet."
+  },
+  "postmortem": {
+    "root_cause": "Routine OS package upgrade on bastion-prod-01 overwrote /etc/ssh/sshd_config with package maintainer defaults, inadvertently enabling password authentication.",
+    "lessons_learned": "Enforce automated Ansible compliance check on all perimeter servers every 15 minutes to guarantee PasswordAuthentication no is permanently set. Deploy fail2ban as an immediate perimeter circuit breaker."
+  }
+}
