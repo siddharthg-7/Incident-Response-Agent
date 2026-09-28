@@ -1,0 +1,110 @@
+import { Incident, SystemHealth } from '../types';
+
+export const mockHealth: SystemHealth = {
+  status: 'healthy',
+  version: '0.1.0',
+  database: 'connected (mock)',
+  hindsight: {
+    status: 'connected',
+    mode: 'mock',
+    bank_id: 'sentinel-incident-memory',
+    banks_active: 1,
+    total_memories_indexed: 1,
+  },
+};
+
+export const mockIncidents: Incident[] = [
+  {
+    id: 'INC-2026-001',
+    title: 'High Volume SSH Authentication Failure on Bastion-01',
+    description: 'Over 14,000 failed SSH login attempts detected from untrusted external IP targeting privileged root account.',
+    incident_type: 'ssh_brute_force',
+    severity: 'HIGH',
+    status: 'POSTMORTEM_COMPLETE',
+    detected_at: '2026-09-25T14:22:10Z',
+    created_at: '2026-09-25T14:22:10Z',
+    updated_at: '2026-09-25T14:45:00Z',
+    source: '198.51.100.45',
+    target: 'bastion-prod-01 (10.0.1.15)',
+    indicators: ['198.51.100.45', 'root', 'port 22', 'sshd'],
+    evidence: {
+      log_source: '/var/log/auth.log',
+      failed_attempts: 14200,
+      time_window_minutes: 15,
+      mitre_technique: 'T1110.001 - Password Guessing',
+    },
+    analysis: {
+      summary: 'High-frequency SSH authentication brute-force attempt targeting bastion-prod-01 from external source 198.51.100.45.',
+      tactics: ['MITRE ATT&CK T1110.001 - Password Guessing', 'MITRE ATT&CK T1021.004 - SSH'],
+      extracted_iocs: ['198.51.100.45', 'root'],
+      assessed_severity: 'HIGH',
+      confidence: 0.94,
+      analyzed_at: '2026-09-25T14:25:00Z',
+    },
+    resolution: {
+      resolved_at: '2026-09-25T14:34:18Z',
+      resolved_by: 'analyst_sarah',
+      actions_taken: [
+        'Applied edge firewall DROP rule for IP 198.51.100.45',
+        'Audited /etc/ssh/sshd_config and discovered PasswordAuthentication was set to yes',
+        'Enforced PasswordAuthentication no and restarted sshd',
+      ],
+      outcome: 'Contained successfully within 12 minutes. Zero unauthorized logins.',
+    },
+    postmortem: {
+      root_cause: 'Routine OS package upgrade on bastion-prod-01 overwrote /etc/ssh/sshd_config with defaults, inadvertently enabling password authentication.',
+      lessons_learned: 'Enforce automated Ansible compliance check on all perimeter servers every 15 minutes to guarantee PasswordAuthentication no is permanently set. Deploy fail2ban as an immediate perimeter circuit breaker.',
+      completed_at: '2026-09-25T14:45:00Z',
+    },
+  },
+  {
+    id: 'INC-2026-002',
+    title: 'Spike in Failed SSH Logins on App-Prod-04',
+    description: 'Continuous stream of rejected SSH connection requests originating from external IP targeting app-prod-04 infrastructure node.',
+    incident_type: 'ssh_brute_force',
+    severity: 'HIGH',
+    status: 'RECOMMENDATION_READY',
+    detected_at: '2026-09-28T09:14:02Z',
+    created_at: '2026-09-28T09:14:02Z',
+    updated_at: '2026-09-28T09:16:30Z',
+    source: '203.0.113.88',
+    target: 'app-prod-04 (10.0.2.44)',
+    indicators: ['203.0.113.88', 'admin', 'root', 'port 22'],
+    evidence: {
+      log_source: '/var/log/auth.log',
+      failed_attempts: 8600,
+      time_window_minutes: 10,
+      mitre_technique: 'T1110.001 - Password Guessing',
+    },
+    analysis: {
+      summary: 'High-frequency SSH authentication brute-force attempt targeting app-prod-04 from external source 203.0.113.88.',
+      tactics: ['MITRE ATT&CK T1110.001 - Password Guessing', 'MITRE ATT&CK T1021.004 - SSH'],
+      extracted_iocs: ['203.0.113.88', 'admin', 'root'],
+      assessed_severity: 'HIGH',
+      confidence: 0.94,
+      analyzed_at: '2026-09-28T09:15:00Z',
+    },
+    recommendation: {
+      recommended_actions: [
+        'Apply immediate perimeter firewall DROP rule for traffic from 203.0.113.88',
+        'CRITICAL AUDIT: Check service configuration on app-prod-04 immediately. In prior incident INC-2026-001, root cause was: Routine OS package upgrade on bastion-prod-01 overwrote /etc/ssh/sshd_config with package maintainer defaults, inadvertently enabling password authentication.',
+        'Inspect live auth logs on app-prod-04 for any established sessions',
+        'PREVENTION RUNBOOK: Apply lesson learned from INC-2026-001: Enforce automated Ansible compliance check on all perimeter servers every 15 minutes to guarantee PasswordAuthentication no is permanently set. Deploy fail2ban as an immediate perimeter circuit breaker.',
+      ],
+      rationale: 'Recommendation enriched by Hindsight memory recall (Match: INC-2026-001, similarity: 88%). Historical incident experienced identical attack pattern. Prior resolution succeeded by addressing root cause and preventing recurrence.',
+      confidence: 0.94,
+      recalled_experiences: [
+        {
+          source_incident_id: 'INC-2026-001',
+          title: 'High Volume SSH Authentication Failure on Bastion-01',
+          similarity_score: 0.88,
+          past_root_cause: 'Routine OS package upgrade on bastion-prod-01 overwrote /etc/ssh/sshd_config with package maintainer defaults, inadvertently enabling password authentication.',
+          past_actions_taken: ['Blocked IP', 'Disabled PasswordAuthentication in sshd_config'],
+          past_outcome: 'Contained successfully within 12 minutes. Zero unauthorized sessions established.',
+          lesson_learned: 'Enforce automated Ansible compliance check on all perimeter servers every 15 minutes to guarantee PasswordAuthentication no is permanently set. Deploy fail2ban as an immediate perimeter circuit breaker.',
+        },
+      ],
+      generated_at: '2026-09-28T09:16:30Z',
+    },
+  },
+];

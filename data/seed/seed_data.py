@@ -10,9 +10,9 @@ from pathlib import Path
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-# Add apps/api to path
+# Add backend to path
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
-sys.path.insert(0, str(ROOT_DIR / "apps" / "api"))
+sys.path.insert(0, str(ROOT_DIR / "backend"))
 
 from app.db.session import init_db, AsyncSessionLocal
 from app.models.incident import IncidentModel

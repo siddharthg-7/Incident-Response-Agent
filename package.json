@@ -4,10 +4,10 @@
   "private": true,
   "description": "Sentinel Memory: A Hindsight-powered Cybersecurity Incident Response Agent",
   "scripts": {
-    "dev:web": "npm --prefix apps/web run dev",
-    "build:web": "npm --prefix apps/web run build",
-    "dev:api": "python -m uvicorn app.main:app --app-dir apps/api --reload --port 8000",
-    "test:api": "pytest apps/api/tests -v",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "dev:backend": "python -m uvicorn app.main:app --app-dir backend --reload --port 8000",
+    "test:backend": "pytest backend/tests -v",
     "demo:milestone1": "python scripts/run_milestone1_demo.py"
   },
   "keywords": [
