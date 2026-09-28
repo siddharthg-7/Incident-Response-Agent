@@ -1,30 +1,45 @@
 You are continuing development of Sentinel Memory.
 
-This is PHASE 3 ONLY.
+This is PHASE 5 — FINAL SHIP.
 
-Your responsibility is:
+This is the FINAL development phase.
 
-FRONTEND + REAL BACKEND INTEGRATION + END-TO-END PRODUCT FLOW
+Phase 1 = Foundation
+Phase 2 = Core Intelligence UI
+Phase 3 = Real Backend + Hindsight Integration
+Phase 4 = Product Polish + Reliability + Evaluation
 
-Phase 1 = Frontend foundation
-Phase 2 = Core Intelligence UI with coherent mock data
+Phase 5 goal:
 
-Phase 3 now replaces the mock workflow with the real backend wherever the backend endpoints are available.
+FREEZE THE PRODUCT
+→ VERIFY EVERYTHING
+→ PREPARE DEPLOYMENT
+→ VERIFY DEMO DATA
+→ VERIFY END-TO-END FLOW
+→ PREPARE FINAL DEMO
+→ DOCUMENT HOW TO RUN IT
 
 IMPORTANT:
-- Do not rebuild the frontend.
-- Preserve the Phase 1 and Phase 2 architecture.
-- Do not implement backend logic inside the frontend.
-- Do not implement Hindsight SDK logic inside the frontend.
-- Do not invent backend endpoints.
-- Read docs/API.md and inspect the actual backend before integrating.
-- If an endpoint differs from the documented contract, adapt through the frontend API service layer rather than scattering changes across components.
+
+DO NOT start new product features.
+
+DO NOT redesign the architecture.
+
+DO NOT introduce unnecessary dependencies.
+
+DO NOT add new agents.
+
+DO NOT add new workflows.
+
+DO NOT expand the scope.
+
+The objective is to ship the existing Sentinel Memory product reliably.
 
 ==================================================
-PROJECT GOAL
+PROJECT
 ==================================================
 
-Sentinel Memory is a cybersecurity incident-response assistant for SOC analysts.
+Sentinel Memory is a Hindsight-powered cybersecurity Incident Response Agent for SOC analysts.
 
 Core workflow:
 
@@ -36,848 +51,993 @@ Detect
 → Retain
 → Improve
 
-The central product experience is:
+The most important proof is:
 
 Incident 1
-→ investigation
-→ response
-→ outcome
-→ post-mortem
-→ Hindsight retain
+→ Analyze
+→ Respond
+→ Resolve
+→ Post-mortem
+→ Retain experience
 
 Then:
 
 Incident 2
-→ investigation
-→ Hindsight recall
-→ relevant past experience
-→ previous response/outcome
-→ context-aware recommendation
+→ Analyze
+→ Hindsight Recall
+→ Previous Incident
+→ Previous Outcome
+→ Memory-informed Recommendation
 
-The frontend must make this entire learning loop visible.
+The evaluator must be able to understand this without reading the source code.
 
 ==================================================
-1. INSPECT BEFORE MODIFYING
+0. FREEZE THE FEATURE SET
 ==================================================
 
-First inspect:
+From this phase onward:
 
+NO new major features.
+
+NO new pages unless absolutely required for deployment/demo.
+
+NO new AI agents.
+
+NO new integrations.
+
+NO new database architecture.
+
+NO new authentication system.
+
+NO SIEM integration.
+
+NO EDR integration.
+
+NO threat-intelligence platform.
+
+NO autonomous remediation.
+
+NO arbitrary command execution.
+
+NO unnecessary chat interface.
+
+NO unrelated analytics.
+
+NO feature creep.
+
+If something is not required to:
+
+1. run the product,
+2. demonstrate Hindsight,
+3. verify reliability,
+4. deploy the application,
+5. or explain the product,
+
+do not add it.
+
+==================================================
+1. INSPECT CURRENT STATE
+==================================================
+
+Before making changes inspect:
+
+- git status
+- git log
+- README.md
+- master.md
+- docs/
 - frontend/
 - backend/
-- docs/API.md
-- backend API routes
-- backend schemas
-- backend services
-- Hindsight integration
-- current mock services
-- current TypeScript types
-- current git status
+- scripts/
+- data/
+- .env.example files
+- deployment configuration
+- package.json
+- requirements.txt
 
-Determine what backend functionality is actually available.
+Verify the current Phase 4 commit/state.
 
-Do not assume an endpoint exists simply because it appears in an old document.
+DO NOT reset or rewrite history.
 
-Use the actual implementation as the source of truth where it differs.
+DO NOT discard working changes.
 
 ==================================================
-2. REAL API MODE
+2. VERIFY THE CORE SYSTEM FIRST
 ==================================================
 
-Phase 2 already created:
+Run the complete existing verification suite.
 
-VITE_API_URL
-VITE_USE_MOCK_API
+At minimum:
 
-Keep both.
+npm --prefix frontend run typecheck
 
-Development must support:
+npm --prefix frontend run build
 
-VITE_USE_MOCK_API=true
+pytest backend/tests -v
 
-and:
+python scripts/verify_phase4_evaluation.py
 
-VITE_USE_MOCK_API=false
+If additional project verification scripts exist, inspect and run them.
 
-When:
+Record actual results.
 
-VITE_USE_MOCK_API=false
-
-the frontend must use the real FastAPI backend.
-
-Do not remove mock mode.
-
-Mock mode remains useful for frontend development and fallback demonstrations.
+Do not claim success without executing the checks.
 
 ==================================================
-3. API SERVICE LAYER
+3. END-TO-END GOLDEN PATH
 ==================================================
 
-Ensure all backend communication happens through centralized services.
+Create a single deterministic "Golden Path" for the final demo.
 
-Conceptually:
+The Golden Path must be:
 
-services/
-├── api.ts
-├── incidentService.ts
-├── memoryService.ts
-├── recommendationService.ts
-└── learningService.ts
+--------------------------------------------------
+INCIDENT 1
+--------------------------------------------------
 
-Do not create unnecessary files if the existing architecture already handles this cleanly.
+Incident:
 
-The UI must not contain direct fetch/axios calls.
+INC-2026-001
 
-Every request should have:
+Type:
 
-- typed request data
-- typed response data
-- error handling
-- loading handling
-
-==================================================
-4. VERIFY API CONTRACT
-==================================================
-
-Work with the backend team implementation.
-
-Expected conceptual endpoints include:
-
-GET /health
-
-POST /api/incidents
-
-GET /api/incidents
-
-GET /api/incidents/{incident_id}
-
-POST /api/incidents/{incident_id}/analyze
-
-GET /api/incidents/{incident_id}/memory
-
-POST /api/incidents/{incident_id}/recommend
-
-POST /api/incidents/{incident_id}/resolve
-
-POST /api/incidents/{incident_id}/postmortem
-
-POST /api/incidents/{incident_id}/learn
-
-BUT:
-
-Do not blindly assume these exact paths or payloads.
-
-Inspect docs/API.md and the actual backend.
-
-Adapt the frontend service layer to the real contract.
-
-==================================================
-5. HEALTH CHECK
-==================================================
-
-Add a lightweight backend connectivity check.
-
-The UI should be able to distinguish:
-
-Backend connected
-
-from:
-
-Backend unavailable
-
-Do not block the entire application if the backend is temporarily unavailable.
-
-Show a useful status indicator or error state.
-
-Do not expose technical stack traces to the user.
-
-==================================================
-6. INCIDENT CREATION
-==================================================
-
-Implement the real incident creation flow if the backend supports it.
-
-Create a clean interface for entering/creating a security incident.
-
-At minimum support the project's demo incident structure.
-
-Possible fields:
-
-- Incident type
-- Source
-- Description
-- Detection time
-- Affected asset
-- Evidence
-- Indicators
-
-Keep the form focused.
-
-Do not turn this into a full SIEM event ingestion system.
-
-After successful creation:
-
-→ receive incident ID
-→ navigate to incident investigation
-→ fetch the created incident
-
-==================================================
-7. REAL INCIDENT LIST
-==================================================
-
-Replace the Phase 2 mock incident list when real API mode is enabled.
-
-The incident page must load from:
-
-GET /api/incidents
-
-Support:
-
-- loading state
-- error state
-- empty state
-- search/filtering on frontend if backend filtering is unavailable
-
-Do not assume server-side filtering exists.
-
-==================================================
-8. INCIDENT INVESTIGATION
-==================================================
-
-The investigation page must now retrieve real data.
+SSH Brute Force / Credential Attack
 
 Flow:
 
-Open incident
-↓
-GET incident
-↓
-Display incident evidence
-↓
-Analyze incident
-↓
-Display analysis
-↓
-Recall memory
-↓
-Display relevant experiences
-↓
-Generate recommendation
-↓
-Display recommendation
-↓
-Resolve
-↓
-Post-mortem
-↓
-Learn
+Detect
+→ Analyze
+→ Respond
+→ Resolve
+→ Post-mortem
+→ Retain
 
-Do not automatically fire every expensive operation on page load unless the backend contract explicitly requires it.
+The incident must contain coherent:
 
-Prefer explicit analyst actions for:
-
-Analyze
-Recall
-Recommend
-Resolve
-Learn
-
-This keeps the workflow understandable and prevents accidental duplicate operations.
-
-==================================================
-9. ANALYSIS INTEGRATION
-==================================================
-
-Connect:
-
-POST /api/incidents/{incident_id}/analyze
-
-Display the actual backend analysis.
-
-Support structured fields such as:
-
-- classification
-- severity
-- confidence
-- indicators
 - evidence
+- analysis
 - root cause
-- investigation summary
-
-Do not hard-code analysis results when real API mode is active.
-
-If the backend returns additional structured information, display it only if it is meaningful to the analyst.
-
-Do not dump raw JSON into the UI.
-
-==================================================
-10. HINDSIGHT MEMORY INTEGRATION
-==================================================
-
-Connect the frontend to the backend memory endpoint.
-
-Conceptual:
-
-GET /api/incidents/{incident_id}/memory
-
-The backend is responsible for Hindsight.
-
-The frontend is responsible only for displaying the returned experiences.
-
-For every memory result, show as much structured information as the backend actually provides:
-
-- past incident
-- relevance
-- incident context
-- previous response
+- response
 - outcome
-- lesson learned
+- lesson
 
-The central UI relationship should remain:
+--------------------------------------------------
+INCIDENT 2
+--------------------------------------------------
+
+Incident:
+
+INC-2026-002
+
+Type:
+
+Similar SSH Brute Force / Credential Attack
+
+Flow:
+
+Detect
+→ Analyze
+→ Recall
+→ Recommend
+
+Hindsight must retrieve:
+
+INC-2026-001
+
+if the live Hindsight system supports the existing Phase 4 behavior.
+
+The frontend must show:
+
+Previous incident
+Previous response
+Previous outcome
+Lesson learned
+Memory-informed recommendation
+
+DO NOT fabricate the recall.
+
+The final demo must use the actual working Hindsight path.
+
+==================================================
+4. VERIFY DEMO DATA
+==================================================
+
+Inspect all seed/demo data.
+
+Remove contradictory or confusing records.
+
+Ensure the main demo tells one coherent story.
+
+Check:
+
+Incident IDs
+timestamps
+severity
+status
+root cause
+evidence
+responses
+outcomes
+post-mortems
+lessons
+memory matches
+recommendations
+
+Do not use random mock data in the real backend demo.
+
+Keep synthetic data clearly identifiable as demonstration data where appropriate.
+
+==================================================
+5. VERIFY HINDSIGHT RETENTION
+==================================================
+
+Verify that Incident 1's experience is actually retained.
+
+The retained experience should represent:
+
+Incident context
++
+Investigation
++
+Root cause
++
+Response
++
+Outcome
++
+Post-mortem
++
+Lesson learned
+
+Verify that this experience can later be recalled for Incident 2.
+
+IMPORTANT:
+
+Do not replace Hindsight with frontend mock data.
+
+Do not replace Hindsight with local similarity calculations.
+
+Do not create fake memory records solely for the demo.
+
+The actual Hindsight integration is the core differentiator.
+
+==================================================
+6. VERIFY HINDSIGHT RECALL
+==================================================
+
+Run the existing Phase 4 evaluation.
+
+Confirm:
+
+- Incident 1 is retained
+- Incident 2 exists
+- memory recall works
+- relevant experience is returned
+- similarity/relevance information is available if provided
+- recommendation receives the recalled experience
+- recommendation provenance is visible
+
+If the exact Phase 4 evaluation script already verifies these things:
+
+reuse it.
+
+Do not create a second competing evaluation framework unless necessary.
+
+==================================================
+7. VERIFY RECOMMENDATION PROVENANCE
+==================================================
+
+The final product must make the following relationship clear:
 
 CURRENT INCIDENT
-↓
-RELEVANT PAST EXPERIENCE
-↓
-PREVIOUS RESPONSE
-↓
-OUTCOME
-↓
-LESSON
+        ↓
+HINDSIGHT RECALL
+        ↓
+PAST EXPERIENCE
+        ↓
+PREVIOUS OUTCOME
+        ↓
+MEMORY-INFORMED RECOMMENDATION
 
-IMPORTANT:
+Verify that recommendation provenance is based on actual backend data.
 
-Do not call a result "Hindsight memory" if the backend response did not actually come from Hindsight.
-
-Use accurate terminology.
+Do not hard-code a claim that a recommendation came from Incident 1 if the backend did not provide that relationship.
 
 ==================================================
-11. MEMORY QUALITY STATES
+8. SECURITY REVIEW
 ==================================================
 
-Handle:
+Before deployment inspect the repository for accidental secrets.
 
-A. Relevant memories found
-
-B. No relevant memories
-
-C. Memory service unavailable
-
-D. Memory request failed
-
-For no memory:
-
-Show a useful state such as:
-
-"No relevant past experience was found for this incident."
-
-Do not display fake recommendations.
-
-==================================================
-12. RECOMMENDATION INTEGRATION
-==================================================
-
-Connect the recommendation UI to the real backend.
-
-Conceptual:
-
-POST /api/incidents/{incident_id}/recommend
-
-The UI should display:
-
-- recommended response
-- reasoning
-- memory influence
-- expected objective
-- risks
-- response actions
-
-Only show fields actually returned by the backend.
-
-If the backend exposes evidence that a recommendation used recalled experience, make that relationship visually prominent.
-
-For example:
-
-Current evidence
-+
-Recalled experience
-↓
-Recommendation
-
-Do not invent a "memory influence score".
-
-==================================================
-13. RESPONSE ACTIONS
-==================================================
-
-Display recommended actions returned by the backend.
-
-Each action may contain:
-
-- action
-- reason
-- risk
-- status
-- approval requirement
-
-The frontend must NOT execute infrastructure actions.
-
-This remains:
-
-Recommendation-first
-Analyst-controlled
-
-If an action requires analyst approval, clearly communicate it.
-
-==================================================
-14. RESOLUTION
-==================================================
-
-Connect the real resolve endpoint.
-
-The analyst should be able to:
-
-- record response outcome
-- update incident status
-- add notes
-- mark the incident resolved
-
-After successful resolution:
-
-Refresh the incident.
-
-Do not assume the frontend can mutate backend state locally without confirmation.
-
-The backend response is the source of truth.
-
-==================================================
-15. POST-MORTEM
-==================================================
-
-Connect the post-mortem flow.
-
-The UI should collect:
-
-- What happened?
-- Root cause
-- Actions taken
-- What worked?
-- What did not work?
-- Final outcome
-- Lesson learned
-
-Submit this through the actual backend contract.
-
-After successful submission:
-
-Show clear confirmation.
-
-Do not pretend the experience was retained if the backend has not confirmed that.
-
-==================================================
-16. LEARNING / RETAIN FLOW
-==================================================
-
-Connect the learning endpoint if implemented.
-
-Conceptual:
-
-POST /api/incidents/{incident_id}/learn
-
-The frontend should show the state progression:
-
-Post-mortem submitted
-↓
-Learning recorded
-↓
-Experience retained
-
-If the backend separates post-mortem and Hindsight retain operations, reflect that accurately.
-
-Do not claim Hindsight retention succeeded merely because the post-mortem request succeeded.
-
-==================================================
-17. END-TO-END DEMO FLOW
-==================================================
-
-Make the complete frontend flow work with the real backend:
-
-STEP 1
-Open dashboard.
-
-STEP 2
-Open or create Incident 1.
-
-STEP 3
-Analyze Incident 1.
-
-STEP 4
-View investigation.
-
-STEP 5
-View memory.
-
-If no memory exists yet, continue normally.
-
-STEP 6
-Generate recommendation.
-
-STEP 7
-Record response.
-
-STEP 8
-Resolve Incident 1.
-
-STEP 9
-Create post-mortem.
-
-STEP 10
-Learn/retain the experience.
-
-STEP 11
-Open Incident 2 with a similar pattern.
-
-STEP 12
-Analyze Incident 2.
-
-STEP 13
-Recall memory.
-
-STEP 14
-Show Incident 1 as a relevant past experience if the backend/Hindsight actually returns it.
-
-STEP 15
-Generate recommendation.
-
-STEP 16
-Clearly show that the recommendation incorporates the recalled experience if supported by the backend response.
-
-This is the core demo.
-
-==================================================
-18. STATE MANAGEMENT
-==================================================
-
-Do not introduce a large state-management library unless genuinely required.
-
-Use:
-
-- React state
-- hooks
-- service layer
-- URL state where useful
-
-The investigation page may need state such as:
-
-incident
-analysis
-memory
-recommendation
-resolution
-postmortem
-learning
-
-Keep state transitions predictable.
-
-Avoid unnecessary global state.
-
-==================================================
-19. DATA REFRESH
-==================================================
-
-After mutations such as:
-
-- incident creation
-- analysis
-- resolve
-- post-mortem
-- learning
-
-refresh relevant backend data.
-
-Do not rely entirely on optimistic updates.
-
-For important security workflow information:
-
-Backend confirmation should be the source of truth.
-
-==================================================
-20. ERROR HANDLING
-==================================================
-
-Handle realistic failures:
-
-Backend unavailable
-API timeout
-Invalid incident
-Analysis failure
-Hindsight unavailable
-No memory
-Recommendation failure
-Resolution failure
-Post-mortem failure
-Learning failure
-
-Messages must be understandable to a SOC analyst.
-
-Bad:
-
-"AxiosError 500"
-
-Better:
-
-"Incident analysis could not be completed. Please retry."
-
-Where appropriate provide:
-
-Retry
-
-Do not hide errors silently.
-
-==================================================
-21. DUPLICATE ACTION PROTECTION
-==================================================
-
-Prevent accidental repeated submissions.
-
-For example:
-
-When analyzing:
-
-Analyze button
-→ loading
-→ disable button
-
-When submitting post-mortem:
-
-Submit
-→ loading
-→ disable
-
-When resolving:
-
-Resolve
-→ confirmation/loading
-→ backend request
-
-Prevent double-click duplicate requests.
-
-==================================================
-22. DEMO SCENARIO DATA
-==================================================
-
-Make sure the backend and frontend can support the primary SSH brute-force scenario.
-
-The frontend should be able to clearly present:
-
-Incident 1:
-SSH brute-force
-
-Evidence:
-Repeated authentication attempts against exposed SSH service.
-
-Investigation:
-Credential attack / brute-force pattern.
-
-Response:
-Appropriate defensive actions.
-
-Outcome:
-Incident resolved.
-
-Post-mortem:
-Lesson captured.
-
-Then Incident 2:
-Similar SSH brute-force pattern.
-
-Memory:
-Previous incident retrieved.
-
-Recommendation:
-Uses previous experience as context.
-
-IMPORTANT:
-
-Do not fabricate successful Hindsight recall in real API mode.
-
-The backend/Hindsight must actually return the experience.
-
-==================================================
-23. MOCK MODE MUST STILL WORK
-==================================================
-
-Do not break Phase 2 mock mode.
-
-Verify:
-
-VITE_USE_MOCK_API=true
-
-still produces the coherent demo.
-
-The same UI components should work in both:
-
-Mock mode
-and
-Real API mode
-
-Avoid duplicating entire pages for mock vs real API.
-
-Only the service/data layer should differ.
-
-==================================================
-24. API RESPONSE NORMALIZATION
-==================================================
-
-If the backend response structure differs slightly from the frontend view model:
-
-Normalize it inside the service layer.
-
-Example:
-
-Backend response
-→ service adapter
-→ frontend domain type
-→ component
-
-Do not scatter backend-specific field transformations across UI components.
-
-This will make the system easier to maintain.
-
-==================================================
-25. SECURITY
-==================================================
-
-Do not expose:
+Check for:
 
 - API keys
 - Hindsight credentials
 - LLM keys
-- database credentials
+- database passwords
+- tokens
+- private URLs
+- local credential files
 
-Frontend environment variables must contain only values safe for browser exposure.
+Check:
 
-Never put backend secrets into:
+.env
 
-VITE_*
+.env.local
 
-Do not log sensitive incident information unnecessarily.
+.env.production
 
-==================================================
-26. UX POLISH
-==================================================
+and similar files if present.
 
-This phase is integration-focused, but make the critical flow polished enough for a live demo.
+Ensure secrets are not committed.
 
-Prioritize:
+Frontend variables beginning with:
 
-- clear loading states
-- clear success states
-- clear error states
-- readable incident evidence
-- visible memory matches
-- recommendation reasoning
-- analyst control
-- obvious state progression
+VITE_
 
-Do not spend the entire phase on decorative UI.
+must contain only browser-safe configuration.
 
-Functional clarity > decoration.
+Never expose:
 
-==================================================
-27. DOCUMENTATION
-==================================================
+LLM API keys
+Hindsight secrets
+database credentials
 
-Update:
+to the frontend.
 
-docs/API.md
+Verify .gitignore.
 
-only if the actual implementation differs from the documented contract.
+If a secret was accidentally committed:
 
-Update:
+DO NOT simply mention it.
 
-frontend/README.md
+Remove it from the current working tree and document the required credential rotation if applicable.
 
-with:
-
-- real backend setup
-- mock mode
-- environment variables
-- API URL
-- running frontend + backend together
-
-Document any integration assumptions.
+Do not rewrite git history unless explicitly required and safe.
 
 ==================================================
-28. VERIFICATION
+9. PRODUCTION CONFIGURATION
 ==================================================
 
-Run frontend checks:
+Review:
 
-npm run build
+frontend/.env.example
 
-TypeScript checks if configured.
+backend/.env.example
 
-Lint if configured.
+root .env.example if present.
 
-Tests if configured.
+Ensure production configuration is clearly documented.
 
-Then run the actual frontend and backend together.
+Separate:
+
+development
+
+from:
+
+production
+
+Do not commit real credentials.
+
+Document required environment variables.
+
+==================================================
+10. BACKEND DEPLOYMENT READINESS
+==================================================
+
+Verify that FastAPI can run cleanly in production-style mode.
+
+Check:
+
+- application entry point
+- requirements
+- environment configuration
+- database connection
+- CORS
+- health endpoint
+- error handling
+- startup behavior
+
+The backend must expose:
+
+GET /health
+
+and return a useful successful response.
+
+Do not add unnecessary infrastructure.
+
+==================================================
+11. FRONTEND DEPLOYMENT READINESS
+==================================================
 
 Verify:
 
-1. Backend health works.
-2. Incident list loads.
-3. Incident detail loads.
-4. Analyze works.
-5. Memory loads.
-6. Recommendation works.
-7. Resolution works.
-8. Post-mortem works.
-9. Learning works.
-10. A second similar incident can retrieve the first incident's experience if Hindsight/backend supports it.
+npm run build
 
-Also verify mock mode still works independently.
+works from:
 
-==================================================
-29. DO NOT FIX BACKEND INSIDE THIS TASK
-==================================================
+frontend/
 
-If a backend endpoint is broken:
+Ensure:
 
-- identify the issue
-- document the exact endpoint/problem
-- do not rewrite backend architecture
-- do not implement backend business logic inside frontend
+VITE_API_URL
 
-If a small contract mismatch is found, coordinate through docs/API.md and adapt the frontend service layer where appropriate.
+can point to the deployed backend.
 
-The backend team owns backend fixes.
+Ensure no localhost-only assumptions remain in production configuration.
+
+Do not hard-code:
+
+http://localhost:8000
+
+inside production application code.
 
 ==================================================
-30. FINAL REPORT
+12. CORS
 ==================================================
 
-At the end report:
+Inspect backend CORS configuration.
 
-1. What was integrated
-2. Actual backend endpoints used
-3. Frontend service changes
-4. Incident flow status
-5. Hindsight memory flow status
-6. Recommendation flow status
-7. Resolution/post-mortem status
-8. Learning flow status
-9. Mock mode status
-10. Build/typecheck/lint/test results
-11. Any backend blockers
-12. Exact remaining work required before Phase 4
+It must allow the deployed frontend origin.
+
+Do NOT use unrestricted:
+
+allow_origins=["*"]
+
+if credentials or production security requirements make that inappropriate.
+
+Use environment configuration where appropriate.
+
+Keep development origins supported.
+
+==================================================
+13. DATABASE / PERSISTENCE
+==================================================
+
+Verify the backend database setup.
+
+Confirm:
+
+- tables/models initialize correctly
+- seed/demo data can be loaded
+- existing incident data persists
+- post-mortem data persists
+- learning data persists
+
+Do not redesign the database.
+
+Do not introduce migrations unless the current system genuinely requires one.
+
+If the project already has migration tooling, verify it.
+
+==================================================
+14. STARTUP / RESET PROCEDURE
+==================================================
+
+Create a reproducible procedure for starting the entire project.
+
+Document:
+
+Backend:
+
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+
+Frontend:
+
+cd frontend
+npm install
+npm run dev
+
+Use the project's actual commands if they differ.
+
+Document required environment setup.
+
+==================================================
+15. DEMO RESET
+==================================================
+
+Create or verify a deterministic demo reset/seed procedure.
+
+The purpose:
+
+A team member should be able to restore the Golden Path before a presentation.
+
+The reset should restore:
+
+INC-2026-001
+INC-2026-002
+
+and required supporting data.
 
 IMPORTANT:
 
-This is PHASE 3 ONLY.
+Do not destroy arbitrary production data.
 
-Do not start Phase 4 automatically.
+If this is a demo-only database, make the behavior explicit.
 
-Do not add new architecture unless required to complete this phase.
+Prefer a clearly named script such as:
 
-Stop after the end-to-end integration has been verified.
+scripts/seed_demo.py
+
+or use the project's existing seed mechanism.
+
+Do not create duplicate competing seed systems.
+
+==================================================
+16. FINAL DEMO SCRIPT
+==================================================
+
+Create/update:
+
+docs/DEMO.md
+
+The final demo should fit approximately 2–3 minutes.
+
+Use this structure:
+
+--------------------------------------------------
+0:00–0:20
+PROBLEM
+--------------------------------------------------
+
+Explain:
+
+SOC analysts repeatedly investigate similar incidents.
+
+Without memory, each incident can become a fresh investigation.
+
+Sentinel Memory gives the incident-response agent persistent experience.
+
+--------------------------------------------------
+0:20–0:50
+INCIDENT 1
+--------------------------------------------------
+
+Open:
+
+INC-2026-001
+
+Show:
+
+- SSH brute-force detection
+- evidence
+- analysis
+- root cause
+
+Keep this fast.
+
+--------------------------------------------------
+0:50–1:10
+RESPONSE + LEARNING
+--------------------------------------------------
+
+Show:
+
+- recommended response
+- analyst action
+- resolution
+- post-mortem
+- retained lesson
+
+Do not spend time explaining every UI element.
+
+--------------------------------------------------
+1:10–1:30
+INCIDENT 2
+--------------------------------------------------
+
+Open:
+
+INC-2026-002
+
+Show the similar SSH attack.
+
+Analyze it.
+
+--------------------------------------------------
+1:30–1:55
+HINDSIGHT RECALL
+--------------------------------------------------
+
+Trigger memory recall.
+
+Show:
+
+Previous Incident:
+INC-2026-001
+
+Then show:
+
+Previous response
+Previous outcome
+Lesson learned
+
+This is the key moment.
+
+--------------------------------------------------
+1:55–2:20
+MEMORY-INFORMED RECOMMENDATION
+--------------------------------------------------
+
+Generate recommendation.
+
+Show:
+
+Current evidence
++
+Past experience
+↓
+Recommendation
+
+Highlight the specific recommendation influenced by the previous incident where the backend provides that provenance.
+
+--------------------------------------------------
+2:20–2:40
+LEARNING LOOP
+--------------------------------------------------
+
+Show:
+
+Incident
+→ Response
+→ Outcome
+→ Memory
+→ Future recommendation
+
+End with:
+
+"The system doesn't just remember incidents.
+It remembers what happened, what worked, and uses that experience on the next incident."
+
+Keep the final wording consistent with the actual product behavior.
+
+==================================================
+17. DEMO SCREEN PREPARATION
+==================================================
+
+Optimize only the existing UI for the Golden Path.
+
+Ensure:
+
+- important information is visible
+- no accidental debug panels
+- no console errors
+- no broken images
+- no empty placeholder sections
+- no development-only labels in the main experience
+- no confusing test controls
+
+Do not redesign the application.
+
+==================================================
+18. DEMO PERFORMANCE
+==================================================
+
+Before the final demo:
+
+- backend already running
+- frontend already loaded
+- database already seeded
+- Hindsight service already available
+- required LLM configuration already available
+
+Do not waste demo time on installation or startup.
+
+Document a pre-demo checklist.
+
+==================================================
+19. DEMO CHECKLIST
+==================================================
+
+Add to:
+
+docs/DEMO.md
+
+Checklist:
+
+[ ] Backend running
+[ ] Frontend running
+[ ] Database available
+[ ] Hindsight available
+[ ] LLM available
+[ ] Demo data seeded
+[ ] INC-2026-001 exists
+[ ] INC-2026-002 exists
+[ ] Incident 1 experience retained
+[ ] Incident 2 memory recall works
+[ ] Recommendation provenance works
+[ ] Browser console clean
+[ ] No API errors
+[ ] Screen recording resolution checked
+
+==================================================
+20. FINAL README
+==================================================
+
+Update root README.md.
+
+It should clearly contain:
+
+1. What Sentinel Memory is
+2. Problem
+3. Solution
+4. Core workflow
+5. Why Hindsight matters
+6. Architecture
+7. Technology stack
+8. Repository structure
+9. Local setup
+10. Environment variables
+11. Running frontend
+12. Running backend
+13. Demo setup
+14. Verification commands
+15. Demo flow
+
+Keep the README factual.
+
+Do not make unsupported performance claims.
+
+==================================================
+21. ARCHITECTURE DOCUMENTATION
+==================================================
+
+Review:
+
+docs/ARCHITECTURE.md
+
+Ensure it accurately represents the final implementation.
+
+The architecture should communicate approximately:
+
+SOC Analyst
+      ↓
+React Frontend
+      ↓
+FastAPI API
+      ↓
+Incident Response Agent
+      ↓
+┌───────────────┬─────────────────┐
+│ LLM Analysis  │ Hindsight Memory │
+└───────────────┴─────────────────┘
+      ↓
+Recommendation
+      ↓
+Analyst-controlled Response
+      ↓
+Outcome / Post-mortem
+      ↓
+Hindsight Retention
+      ↓
+Future Incident Recall
+
+Do not document components that do not actually exist.
+
+==================================================
+22. HINDSIGHT DOCUMENTATION
+==================================================
+
+Review:
+
+docs/HINDSIGHT.md
+
+It must clearly explain:
+
+1. What information is retained
+2. When retention happens
+3. How recall is triggered
+4. How recalled experience enters recommendation generation
+5. How outcomes and lessons become future experience
+6. Why memory is central to the product
+
+Do not claim unsupported internal Hindsight behavior.
+
+Use the actual implementation.
+
+==================================================
+23. API DOCUMENTATION
+==================================================
+
+Review:
+
+docs/API.md
+
+Make sure the documented endpoints match the actual backend.
+
+Remove stale endpoint descriptions.
+
+Document:
+
+- request
+- response
+- error behavior
+
+Only document functionality that actually exists.
+
+==================================================
+24. FINAL TEST SUITE
+==================================================
+
+Run all existing checks.
+
+At minimum:
+
+npm --prefix frontend run typecheck
+
+npm --prefix frontend run build
+
+pytest backend/tests -v
+
+python scripts/verify_phase4_evaluation.py
+
+Run any additional project verification scripts that already exist.
+
+Fix real failures.
+
+Do not weaken tests simply to make them pass.
+
+==================================================
+25. GOLDEN PATH AUTOMATION
+==================================================
+
+If practical, create one final verification script for the Golden Path.
+
+For example:
+
+scripts/verify_final_demo.py
+
+It should verify the actual system where feasible:
+
+1. backend health
+2. incident 1 available
+3. incident 1 outcome/post-mortem available
+4. retained experience available
+5. incident 2 available
+6. Hindsight recall returns incident 1
+7. recommendation exists
+8. provenance is present
+9. final journey is coherent
+
+Do not duplicate the existing Phase 4 evaluator unnecessarily.
+
+If:
+
+verify_phase4_evaluation.py
+
+already provides this coverage, reuse or extend it rather than creating redundant infrastructure.
+
+==================================================
+26. FINAL GIT REVIEW
+==================================================
+
+Run:
+
+git status
+
+Review:
+
+git diff
+
+Review recent commits.
+
+Ensure:
+
+- no secrets
+- no debug files
+- no temporary files
+- no screenshots accidentally committed
+- no local machine paths
+- no unused experimental scripts
+- no broken imports
+
+Remove only genuinely temporary artifacts.
+
+Do not remove useful documentation.
+
+==================================================
+27. FEATURE FREEZE
+==================================================
+
+After verification:
+
+DO NOT add new features.
+
+Only allow:
+
+- bug fixes
+- deployment fixes
+- documentation corrections
+- demo-data corrections
+- reliability fixes
+- security fixes
+- small UX corrections required for the final demo
+
+The product is now feature frozen.
+
+==================================================
+28. FINAL LIVE DEMO VERIFICATION
+==================================================
+
+Perform the complete live journey:
+
+Dashboard
+↓
+INC-2026-001
+↓
+Analysis
+↓
+Response
+↓
+Resolution
+↓
+Post-mortem
+↓
+Retention
+↓
+INC-2026-002
+↓
+Analysis
+↓
+Hindsight Recall
+↓
+INC-2026-001 recalled
+↓
+Previous outcome shown
+↓
+Memory-informed recommendation
+↓
+Analyst action
+↓
+Learning
+
+Verify that this works with the actual running system.
+
+==================================================
+29. FINAL OUTPUT REPORT
+==================================================
+
+When finished, provide a concise final ship report containing:
+
+1. Final architecture status
+2. Feature-freeze status
+3. Deployment readiness
+4. Environment configuration
+5. Database readiness
+6. Hindsight readiness
+7. Golden Path status
+8. Demo-data status
+9. Security/secret scan status
+10. Verification results
+11. Documentation updated
+12. Git commit/hash
+13. Deployment blockers, if any
+14. Exact commands to run the final system
+
+Include actual test results.
+
+Do not claim deployment succeeded unless you actually deployed and verified it.
+
+==================================================
+30. FINAL STOP CONDITION
+==================================================
+
+Once:
+
+- tests pass
+- build passes
+- Golden Path passes
+- Hindsight recall passes
+- recommendation provenance passes
+- demo data is deterministic
+- documentation is complete
+- repository is clean
+- deployment configuration is ready
+
+STOP.
+
+Do not continue adding features.
+
+Sentinel Memory is now in FINAL SHIP / FEATURE FREEZE state.

@@ -1,63 +1,91 @@
-# Sentinel Memory - Core Demo Script (2-3 Minutes)
+# Sentinel Memory - Final Live Demo Script (2–3 Minutes)
 
-This document defines the official milestone demo demonstrating **how Sentinel Memory learns and improves from experience using Hindsight**.
-
----
-
-## The Demo Concept: "Before vs After Experience"
-
-The core demonstration highlights two sequential incidents to visibly prove the agent's memory improvement:
-
-```
-[Incident 1: First Occurrence]
-Alert → Analysis → Recommendation (Generic) → Analyst Resolves → Post-Mortem → RETAIN to Hindsight
-
-                                        ↓
-
-[Incident 2: Subsequent Occurrence]
-Alert → Analysis → RECALL from Hindsight → Recommendation (Enriched with Past Lessons & Root Cause!)
-```
+This document provides the definitive, time-calibrated presentation walkthrough for **Sentinel Memory** (Hindsight-powered Incident Response Agent for SOC Analysts).
 
 ---
 
-## Step-by-Step Demo Flow
+## Pre-Demo Checklist
 
-### Phase 1: Incident 1 (Baseline - Cold Memory)
-1. **Ingest Incident 1**:
-   - `INC-2026-001`: External SSH Brute Force against `bastion-prod-01`.
-   - Alert indicators: 14,200 failed attempts from IP `198.51.100.45`.
-2. **Agent Analysis**:
-   - Agent identifies MITRE ATT&CK T1110.001 (Brute Force / Password Guessing).
-   - Generates generic baseline recommendation: *"Block IP 198.51.100.45"*.
-3. **Analyst Resolution & Post-Mortem**:
-   - Analyst investigates and discovers the true root cause: *Password authentication was inadvertently re-enabled during a routine package update.*
-   - Analyst executes: (a) Drop IP, (b) Disable `PasswordAuthentication no` in `sshd_config`, (c) Restart sshd.
-   - Outcome: *Contained in 12 min. Zero unauthorized logins.*
-   - Lesson Learned: *Enforce automated Ansible compliance check to ensure password auth remains disabled.*
-4. **Hindsight RETAIN**:
-   - The outcome capsule is retained into Hindsight's memory bank.
+Run through this checklist 5 minutes prior to presentation:
 
----
-
-### Phase 2: Incident 2 (Adaptive - Recalled Memory)
-1. **Ingest Incident 2**:
-   - `INC-2026-002`: A different external attacker (`203.0.113.88`) attempts SSH brute force on `app-prod-04`.
-2. **Agent Analysis & Hindsight RECALL**:
-   - Agent detects the SSH attack pattern.
-   - Sentinel Agent queries Hindsight: `recall(query="ssh brute force failed password login")`.
-   - Hindsight returns `INC-2026-001` with high relevance!
-3. **Enriched Contextual Recommendation**:
-   - **Without Memory**, an agent would only say: *"Block IP 203.0.113.88"*.
-   - **With Hindsight Memory**, Sentinel Agent outputs:
-     > *"🚨 Primary Action: Block IP 203.0.113.88.*
-     > *⚠️ Critical Memory Context (from INC-2026-001): In the previous SSH incident on Bastion-01, attackers exploited password authentication that was accidentally left enabled. Immediate recommendation: Audit `sshd_config` on `app-prod-04` right now to ensure `PasswordAuthentication no` is enforced, preventing credentials from being cracked."*
+- [ ] **Backend Running**: `http://127.0.0.1:8000` responding (`GET /health` returns `healthy`)
+- [ ] **Frontend Running**: `http://localhost:5173` loaded in browser
+- [ ] **Database Available**: SQLite tables initialized (`sentinel_memory.db`)
+- [ ] **Hindsight Available**: Memory bank `sentinel-incident-memory` initialized
+- [ ] **Demo Data Seeded**: Clean state verified (`python scripts/seed_demo.py`)
+- [ ] **INC-2026-001 Exists**: SSH brute force on `bastion-01`
+- [ ] **INC-2026-002 Exists**: SSH brute force on `app-prod-04`
+- [ ] **Incident 1 Experience Retained**: Post-mortem committed into memory
+- [ ] **Incident 2 Recall Verified**: Hindsight returns INC-2026-001 with 84%+ similarity
+- [ ] **Recommendation Provenance Verified**: Actions include `CRITICAL AUDIT` & `PREVENTION RUNBOOK`
+- [ ] **Browser Console Clean**: 0 unhandled rejections or runtime errors
+- [ ] **Screen Recording / Display**: Display scaling checked (1080p / 1440p)
 
 ---
 
-## Running the Automated Demo CLI
+## 2–3 Minute Presentation Script
 
-To execute this exact demonstration in terminal:
+### `0:00–0:20` | PROBLEM: The SOC Amnesia Crisis
+- **Action**: Open Dashboard (`http://localhost:5173/dashboard`). Point to the active threat queue.
+- **Narrative**:
+  > *"Every day, SOC analysts face a frustrating reality: amnesia. An alert comes in, the team scrambles to isolate the attacker, and days later a post-mortem is filed away in a wiki. Months later, a similar attack hits a different server, and the next analyst starts from scratch—repeating the same mistakes. Stateless AI chatbots and generic RAG can't solve this because they only know static textbooks. Sentinel Memory solves this by equipping an Incident Response Agent with Hindsight: experiential, long-term organizational memory."*
+
+---
+
+### `0:20–0:50` | INCIDENT 1: Investigation & Root Cause
+- **Action**: Click into **INC-2026-001** (`/incidents/INC-2026-001`).
+- **Narrative**:
+  > *"Here is Incident 1: 14,200 failed SSH logins attacking our perimeter bastion `bastion-01`. Our AI threat analysis detects the credential attack pattern. But notice what our analyst discovers upon deeper investigation: the attacker broke in because a routine OS upgrade accidentally re-enabled password authentication."*
+
+---
+
+### `0:50–1:10` | RESPONSE + LEARNING: Resolution & Memory Commit
+- **Action**: Scroll to **Record Resolution** & **Post-Mortem**.
+- **Narrative**:
+  > *"The SOC analyst takes action: drops the attacker IP, disables password authentication in sshd_config, and confirms zero unauthorized sessions. In the post-mortem, the analyst documents the lesson: enforce pubkey-only SSH across all DMZ bastions and deploy aggressive fail2ban.*
+  >
+  > *With Sentinel Memory, this isn't lost. We click **Post-Mortem & Retain**, and Hindsight commits the full case context, root cause, and verified outcome into our long-term memory bank."*
+
+---
+
+### `1:10–1:30` | INCIDENT 2: Subsequent Attack on App-Prod-04
+- **Action**: Navigate to **INC-2026-002** (`/incidents/INC-2026-002`).
+- **Narrative**:
+  > *"Weeks later, a completely different attacker from a different IP targets a production application server: `app-prod-04`. We click **Analyze Threat Telemetry**."*
+
+---
+
+### `1:30–1:55` | HINDSIGHT RECALL: Experiential Match
+- **Action**: Click **Recall & Recommend**. Highlight the **Relevant Past Incidents** card and the **Hindsight Cognitive Engine Explanation**.
+- **Narrative**:
+  > *"Notice what just happened. The agent did not just grep documentation. Hindsight performed a semantic vector search across our retained incident memories and matched **INC-2026-001 with an 84.6% confidence score**.*
+  >
+  > *Right on screen, the analyst sees the exact historical precedent: what happened before, the identified root cause, and the proven outcome: threat contained with zero breach."*
+
+---
+
+### `1:55–2:20` | MEMORY-INFORMED RECOMMENDATION: Provenance & Directives
+- **Action**: Highlight the **Memory Influence Provenance Banner** and the purple **Hindsight Precedent** directives.
+- **Narrative**:
+  > *"Because Sentinel Memory remembers, the synthesized recommendation is radically transformed:*
+  > 
+  > *1. A generic agent would only say 'block the IP'.*
+  > *2. Sentinel Memory outputs a **CRITICAL AUDIT** directive: 'Check service configuration on app-prod-04 immediately. In prior incident INC-2026-001, root cause was password authentication drift.'*
+  > *3. It injects a **PREVENTION RUNBOOK**: 'Enforce pubkey-only SSH and velocity geo-blocking.'*
+  >
+  > *The analyst has full human-in-the-loop control to click **Approve** and **Mark Executed** directly from the directive console."*
+
+---
+
+### `2:20–2:40` | LEARNING LOOP: Summary & Closing
+- **Action**: Click into the **Learning & Evolution** view (`/learning`).
+- **Narrative**:
+  > *"In our Learning Timeline, you can see how organizational MTTR drops as memories accumulate. Sentinel Memory doesn't just remember incidents. It remembers what happened, what worked, and uses that experience on the next incident. Thank you."*
+
+---
+
+## Deterministic Reset Command
+To restore this exact clean state at any time:
 ```bash
-python scripts/run_milestone1_demo.py
+python scripts/seed_demo.py
 ```
-The script runs the full end-to-end loop, prints structured visual summaries, and displays the direct comparison between generic response and Hindsight-enhanced response.
