@@ -10,6 +10,9 @@ from app.schemas.incident import (
     IncidentResolution,
     IncidentPostMortem,
     RecalledExperience,
+    LearningEvent,
+    MemoryRecallRequest,
+    DemoResetResponse,
 )
 
 __all__ = [
@@ -24,4 +27,8 @@ __all__ = [
     "IncidentResolution",
     "IncidentPostMortem",
     "RecalledExperience",
+    "LearningEvent",
+    "MemoryRecallRequest",
+    "DemoResetResponse",
 ]
+

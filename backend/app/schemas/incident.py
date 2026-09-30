@@ -30,6 +30,10 @@ class RecalledExperience(BaseModel):
     past_actions_taken: List[str] = Field(default_factory=list)
     past_outcome: Optional[str] = None
     lesson_learned: Optional[str] = None
+    incident_pattern: Optional[str] = None
+    relevance_label: Optional[str] = None
+    what_happened: Optional[str] = None
+    timestamp: Optional[datetime] = None
 
 
 class IncidentAnalysis(BaseModel):
@@ -106,3 +110,33 @@ class IncidentResponse(IncidentBase):
     postmortem: Optional[IncidentPostMortem] = None
 
     model_config = {"from_attributes": True}
+
+
+class LearningEvent(BaseModel):
+    """Timeline event showing empirical agent evolution from resolved incident post-mortems."""
+    id: str
+    incident_id: str
+    title: str
+    attack_type: str
+    trigger_event: str
+    retained_memory_id: str
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    root_cause: str
+    outcome_summary: str
+    lessons_learned: str
+    matched_subsequent_incidents: Optional[List[str]] = None
+
+
+class MemoryRecallRequest(BaseModel):
+    """Request payload for ad-hoc semantic search against Hindsight memory bank."""
+    query: str
+    context: Optional[str] = None
+    limit: int = Field(default=5, ge=1, le=20)
+
+
+class DemoResetResponse(BaseModel):
+    """Confirmation payload returned after restoring deterministic demo seed state."""
+    status: str = "success"
+    message: str
+    incidents_reset: List[str] = Field(default_factory=list)
+
