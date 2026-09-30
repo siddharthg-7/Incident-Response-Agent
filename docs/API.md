@@ -280,3 +280,91 @@ All response bodies are `application/json`. Errors return standard RFC 7807 prob
 - **Error Expectations**:
   - `404 Not Found`: Incident not found.
   - `400 Bad Request`: Incident has not yet been resolved or lacks post-mortem details.
+
+---
+
+## 3. Hindsight Memory Bank & Learning Timeline
+
+### `GET /api/memory`
+- **Purpose**: Retrieve all retained experience capsules across the Hindsight memory bank for the Memory Bank dashboard.
+- **Request Body**: None
+- **Expected Response (200 OK)**:
+```json
+[
+  {
+    "source_incident_id": "INC-2026-001",
+    "title": "High Volume SSH Authentication Failure on Bastion-01",
+    "similarity_score": 1.0,
+    "relevance_label": "Hindsight Retained Capsule (100%)",
+    "what_happened": "14,200 failed SSH logins hitting our DMZ bastion.",
+    "past_root_cause": "Routine OS package upgrade on bastion-prod-01 overwrote /etc/ssh/sshd_config with defaults, inadvertently enabling password authentication.",
+    "past_actions_taken": [
+      "Applied edge firewall DROP rule for IP 198.51.100.45",
+      "Audited /etc/ssh/sshd_config and disabled password auth"
+    ],
+    "past_outcome": "Contained successfully. Zero breach.",
+    "lesson_learned": "Enforce automated Ansible compliance check on all perimeter servers every 15 minutes.",
+    "incident_pattern": "ssh_brute_force",
+    "timestamp": "2026-09-28T09:30:00Z"
+  }
+]
+```
+
+---
+
+### `GET /api/memory/timeline`
+- **Purpose**: Retrieve the chronological timeline of learning events showing when past post-mortems were retained and which subsequent incidents matched them.
+- **Request Body**: None
+- **Expected Response (200 OK)**:
+```json
+[
+  {
+    "id": "LRN-001",
+    "incident_id": "INC-2026-001",
+    "title": "High Volume SSH Authentication Failure on Bastion-01 - Lessons Retained",
+    "attack_type": "ssh_brute_force",
+    "trigger_event": "Post-Mortem Retained in Hindsight",
+    "retained_memory_id": "mem_inc_2026_001",
+    "timestamp": "2026-09-28T09:30:00Z",
+    "root_cause": "Routine OS package upgrade overwrote sshd_config",
+    "outcome_summary": "Contained successfully. Zero breach.",
+    "lessons_learned": "Enforce automated Ansible compliance check on perimeter servers.",
+    "matched_subsequent_incidents": ["INC-2026-002"]
+  }
+]
+```
+
+---
+
+### `POST /api/memory/recall`
+- **Purpose**: Ad-hoc semantic search query against the Hindsight memory bank.
+- **Request Body**:
+```json
+{
+  "query": "SSH brute force root login attempts with configuration drift",
+  "context": "type: ssh_brute_force",
+  "limit": 3
+}
+```
+- **Expected Response (200 OK)**: List of matching `RecalledExperience` objects.
+
+---
+
+## 4. Demo State Management
+
+### `POST /api/demo/reset`
+- **Purpose**: Reset and restore the database to the deterministic, clean state for the Golden Path presentation.
+- **Request Body**: None
+- **Expected Response (200 OK)**:
+```json
+{
+  "status": "success",
+  "message": "Successfully reset and seeded 3 demo scenarios.",
+  "incidents_reset": [
+    "INC-2026-001",
+    "INC-2026-002",
+    "INC-2026-003"
+  ]
+}
+```
+

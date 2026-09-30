@@ -568,6 +568,28 @@ export const api = {
       return [...localRetainedExperiences];
     }
     try {
+      const res = await fetch(`${API_BASE}/api/memory`);
+      if (res.ok) {
+        const rawMemories = await res.json();
+        return rawMemories.map((exp: any) => ({
+          source_incident_id: exp.source_incident_id,
+          title: exp.title,
+          incident_pattern: exp.incident_pattern || 'Security Incident Pattern',
+          similarity_score: exp.similarity_score ?? 1.0,
+          relevance_label: exp.relevance_label || 'Hindsight Retained Capsule (100%)',
+          what_happened: exp.what_happened || exp.past_root_cause || '',
+          past_root_cause: exp.past_root_cause || 'Under investigation',
+          past_actions_taken: exp.past_actions_taken || [],
+          past_outcome: exp.past_outcome || 'Resolved',
+          lesson_learned: exp.lesson_learned || 'Standard runbook applied',
+          timestamp: exp.timestamp || new Date().toISOString(),
+        }));
+      }
+    } catch {
+      // fallback to extracting from incidents
+    }
+
+    try {
       const incidents = await this.listIncidents();
       const memories: RecalledExperience[] = [];
       for (const inc of incidents) {
@@ -599,6 +621,15 @@ export const api = {
       return [...localLearningEvents];
     }
     try {
+      const res = await fetch(`${API_BASE}/api/memory/timeline`);
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {
+      // fallback to synthesizing from incidents
+    }
+
+    try {
       const incidents = await this.listIncidents();
       const events: LearningEvent[] = [];
       let counter = 1;
@@ -624,4 +655,21 @@ export const api = {
       return localLearningEvents;
     }
   },
+
+  // 14. POST /api/demo/reset
+  async resetDemo(): Promise<{ status: string; message: string; incidents_reset: string[] }> {
+    if (USE_MOCK) {
+      localIncidents = [...mockIncidents];
+      localRetainedExperiences = [...mockRetainedExperiences];
+      localLearningEvents = [...mockLearningEvents];
+      return {
+        status: 'success',
+        message: 'Mock demo data reset successfully.',
+        incidents_reset: ['INC-2026-001', 'INC-2026-002', 'INC-2026-003'],
+      };
+    }
+    const res = await fetch(`${API_BASE}/api/demo/reset`, { method: 'POST' });
+    return handleResponse(res);
+  },
 };
+

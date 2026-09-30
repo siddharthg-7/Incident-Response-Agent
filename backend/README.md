@@ -8,8 +8,9 @@ FastAPI-powered asynchronous backend implementing the Sentinel Memory agent, RES
 backend/
 ├── app/
 │   ├── api/
-│   │   ├── routes/             # REST Route handlers (/health, /api/incidents)
+│   │   ├── routes/             # REST Route handlers (/health, /api/incidents, /api/memory, /api/demo)
 │   │   └── dependencies/       # FastAPI dependency injection (e.g. get_db)
+
 │   ├── agents/
 │   │   ├── incident_agent/     # Orchestrator coordinating full response loop
 │   │   ├── analyzer/           # Threat classification and indicator extraction

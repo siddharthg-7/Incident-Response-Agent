@@ -12,15 +12,23 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 
 from app.core.config import settings
 from app.db.session import Base, get_db
+from app.models.incident import IncidentModel  # Ensure tables registered in Base.metadata
 from app.main import app
 from app.hindsight.mock_adapter import MockHindsightAdapter
 from app.hindsight.service import HindsightService, get_hindsight_service
 
-# Use in-memory SQLite database for testing
-TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
+# Dedicated test database file guaranteeing async transaction isolation across thread boundaries
+TEST_DB_FILE = Path(__file__).parent / "test_suite.db"
+TEST_DATABASE_URL = f"sqlite+aiosqlite:///{TEST_DB_FILE.as_posix()}"
 
-test_engine = create_async_engine(TEST_DATABASE_URL, echo=False)
+test_engine = create_async_engine(
+    TEST_DATABASE_URL,
+    connect_args={"check_same_thread": False},
+    echo=False
+)
 TestingSessionLocal = async_sessionmaker(bind=test_engine, class_=AsyncSession, expire_on_commit=False)
+
+
 
 
 @pytest.fixture(scope="session")
@@ -70,3 +78,15 @@ async def client(mock_hindsight):
     # Clean up overrides
     app.dependency_overrides.clear()
     hs_module._default_hindsight_service = old_service
+
+
+@pytest.fixture(scope="session", autouse=True)
+def cleanup_test_database():
+    yield
+    # Safely remove test sqlite file after entire test run
+    if TEST_DB_FILE.exists():
+        try:
+            TEST_DB_FILE.unlink(missing_ok=True)
+        except Exception:
+            pass
+
