@@ -17,8 +17,10 @@ class IncidentModel(Base):
     
     source = Column(String(255), nullable=True)
     target = Column(String(255), nullable=True)
+    analyst_assigned = Column(String(128), nullable=True, default="soc_lead_analyst")
     indicators = Column(JSON, default=list)
     evidence = Column(JSON, default=dict)
+
     
     analysis = Column(JSON, nullable=True)
     recommendation = Column(JSON, nullable=True)

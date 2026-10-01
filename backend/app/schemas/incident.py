@@ -21,6 +21,29 @@ class IncidentStatus(str, Enum):
     POSTMORTEM_COMPLETE = "POSTMORTEM_COMPLETE"
 
 
+class ActionStatus(str, Enum):
+    RECOMMENDED = "RECOMMENDED"
+    APPROVED = "APPROVED"
+    EXECUTED = "EXECUTED"
+
+
+class RiskLevel(str, Enum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+
+
+class ResponseAction(BaseModel):
+    """Detailed response action with approval requirement, risk level, and rationale."""
+    id: str
+    action: str
+    reason: str
+    status: ActionStatus = ActionStatus.RECOMMENDED
+    risk_level: RiskLevel = RiskLevel.LOW
+    requires_approval: bool = True
+    category: Optional[str] = "containment"
+
+
 class RecalledExperience(BaseModel):
     """Past incident experience recalled from Hindsight memory."""
     source_incident_id: str
@@ -38,6 +61,10 @@ class RecalledExperience(BaseModel):
 
 class IncidentAnalysis(BaseModel):
     """Structured AI analysis of an incident."""
+    classification: Optional[str] = None
+    suspected_root_cause: Optional[str] = None
+    investigation_summary: Optional[str] = None
+    evidence_summary: List[str] = Field(default_factory=list)
     summary: str
     attack_vector: Optional[str] = None
     potential_impact: Optional[str] = None
@@ -50,7 +77,13 @@ class IncidentAnalysis(BaseModel):
 
 class IncidentRecommendation(BaseModel):
     """Context-aware response recommendation synthesized from evidence + Hindsight memory."""
+    recommended_response: Optional[str] = None
+    why_this_response: Optional[str] = None
+    memory_influence: Optional[str] = None
+    expected_objective: Optional[str] = None
+    potential_risks: Optional[str] = None
     recommended_actions: List[str] = Field(default_factory=list)
+    detailed_actions: List[ResponseAction] = Field(default_factory=list)
     rationale: str
     confidence: float = Field(default=0.85, ge=0.0, le=1.0)
     recalled_experiences: List[RecalledExperience] = Field(default_factory=list)
@@ -59,15 +92,22 @@ class IncidentRecommendation(BaseModel):
 
 class IncidentResolution(BaseModel):
     """Resolution details recorded by SOC analyst."""
+    status: Optional[IncidentStatus] = IncidentStatus.RESOLVED
     actions_taken: List[str] = Field(default_factory=list)
     outcome: str
+    notes: Optional[str] = None
     resolved_by: str = "soc_analyst"
     resolved_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class IncidentPostMortem(BaseModel):
     """Post-mortem analysis capturing root cause and long-term lessons learned."""
+    what_happened: Optional[str] = None
     root_cause: str
+    what_was_done: Optional[str] = None
+    what_worked: Optional[str] = None
+    what_did_not_work: Optional[str] = None
+    final_outcome: Optional[str] = None
     lessons_learned: str
     completed_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -79,6 +119,7 @@ class IncidentBase(BaseModel):
     severity: Severity = Severity.MEDIUM
     source: Optional[str] = None
     target: Optional[str] = None
+    analyst_assigned: Optional[str] = "soc_lead_analyst"
     indicators: List[str] = Field(default_factory=list)
     evidence: Dict[str, Any] = Field(default_factory=dict)
 
@@ -94,8 +135,10 @@ class IncidentUpdate(BaseModel):
     status: Optional[IncidentStatus] = None
     source: Optional[str] = None
     target: Optional[str] = None
+    analyst_assigned: Optional[str] = None
     indicators: Optional[List[str]] = None
     evidence: Optional[Dict[str, Any]] = None
+
 
 
 class IncidentResponse(IncidentBase):
