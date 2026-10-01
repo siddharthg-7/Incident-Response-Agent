@@ -183,3 +183,13 @@ class DemoResetResponse(BaseModel):
     message: str
     incidents_reset: List[str] = Field(default_factory=list)
 
+
+class ActionStatusUpdateRequest(BaseModel):
+    """Request payload to update approval or execution state of a response action."""
+    status: ActionStatus
+
+
+class AssignAnalystRequest(BaseModel):
+    """Request payload to assign or reassign an analyst to lead an investigation."""
+    analyst: str
+

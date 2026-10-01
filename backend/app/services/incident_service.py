@@ -4,10 +4,12 @@ import uuid
 import json
 from pathlib import Path
 from sqlalchemy import select, delete
+from sqlalchemy.orm.attributes import flag_modified
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.incident import IncidentModel
 from app.schemas.incident import (
+    ActionStatus,
     IncidentCreate,
     IncidentUpdate,
     IncidentStatus,
@@ -41,6 +43,7 @@ class IncidentService:
             status=IncidentStatus.NEW.value,
             source=payload.source,
             target=payload.target,
+            analyst_assigned=payload.analyst_assigned or "soc_lead_analyst",
             indicators=payload.indicators,
             evidence=payload.evidence,
             detected_at=now,
@@ -151,6 +154,116 @@ class IncidentService:
         await self.db.commit()
         await self.db.refresh(incident)
         return incident
+
+    async def update_action_status(
+        self,
+        incident_id: str,
+        action_id: str,
+        new_status: Any
+    ) -> IncidentModel:
+        """Update the approval or execution status of a specific response action."""
+        incident = await self.get_incident(incident_id)
+        if not incident:
+            raise ValueError(f"Incident {incident_id} not found")
+
+        if not incident.recommendation or "detailed_actions" not in incident.recommendation:
+            raise ValueError(f"Incident {incident_id} has no recommendation with detailed actions")
+
+        rec = dict(incident.recommendation)
+        detailed_actions = list(rec.get("detailed_actions", []))
+        
+        status_str = new_status.value if hasattr(new_status, "value") else str(new_status)
+        found = False
+        for act in detailed_actions:
+            if act.get("id") == action_id:
+                act["status"] = status_str
+                found = True
+                break
+
+        if not found:
+            raise ValueError(f"Action {action_id} not found in recommendation for incident {incident_id}")
+
+        rec["detailed_actions"] = detailed_actions
+        incident.recommendation = rec
+        flag_modified(incident, "recommendation")
+        incident.updated_at = datetime.now(timezone.utc)
+
+        await self.db.commit()
+        await self.db.refresh(incident)
+        return incident
+
+    async def assign_analyst(self, incident_id: str, analyst: str) -> IncidentModel:
+        """Assign or reassign an analyst to lead the incident investigation."""
+        incident = await self.get_incident(incident_id)
+        if not incident:
+            raise ValueError(f"Incident {incident_id} not found")
+
+        incident.analyst_assigned = analyst
+        incident.updated_at = datetime.now(timezone.utc)
+
+        await self.db.commit()
+        await self.db.refresh(incident)
+        return incident
+
+    async def update_incident(self, incident_id: str, payload: IncidentUpdate) -> IncidentModel:
+        """Apply general property updates to an incident."""
+        incident = await self.get_incident(incident_id)
+        if not incident:
+            raise ValueError(f"Incident {incident_id} not found")
+
+        update_data = payload.model_dump(exclude_unset=True)
+        for field, value in update_data.items():
+            if value is not None and hasattr(incident, field):
+                if field == "status" and hasattr(value, "value"):
+                    setattr(incident, field, value.value)
+                elif field == "severity" and hasattr(value, "value"):
+                    setattr(incident, field, value.value)
+                else:
+                    setattr(incident, field, value)
+
+        incident.updated_at = datetime.now(timezone.utc)
+        await self.db.commit()
+        await self.db.refresh(incident)
+        return incident
+
+    async def generate_postmortem(self, incident_id: str) -> IncidentModel:
+        """Automatically synthesize an outcome-oriented post-mortem from incident lifecycle artifacts."""
+        incident = await self.get_incident(incident_id)
+        if not incident:
+            raise ValueError(f"Incident {incident_id} not found")
+
+        analysis = incident.analysis or {}
+        res = incident.resolution or {}
+
+        what_happened = (
+            incident.description
+            or analysis.get("investigation_summary")
+            or f"Security incident {incident.id} involving {incident.incident_type}."
+        )
+        root_cause = (
+            analysis.get("suspected_root_cause")
+            or f"Vulnerability in {incident.incident_type} exposed service allowed unauthorized traffic."
+        )
+        actions = res.get("actions_taken", [])
+        what_was_done = "; ".join(actions) if actions else "Containment and security baseline enforcement executed."
+        what_worked = "Perimeter containment rule and prompt verification prevented unauthorized breach."
+        what_did_not_work = "Automated preventive guardrails did not trigger prior to threat threshold breach."
+        final_outcome = res.get("outcome") or "Threat neutralized with zero credential compromise."
+        lessons_learned = (
+            "Enforce automated compliance checks across infrastructure nodes and configure immediate perimeter rate-limiting."
+        )
+
+        pm = IncidentPostMortem(
+            what_happened=what_happened,
+            root_cause=root_cause,
+            what_was_done=what_was_done,
+            what_worked=what_worked,
+            what_did_not_work=what_did_not_work,
+            final_outcome=final_outcome,
+            lessons_learned=lessons_learned,
+            completed_at=datetime.now(timezone.utc)
+        )
+        return await self.add_postmortem(incident_id, pm)
 
     async def learn_incident(self, incident_id: str) -> Dict[str, Any]:
         """Commit the resolved incident and post-mortem into Hindsight memory."""
@@ -282,6 +395,7 @@ class IncidentService:
                 status=data.get("status", "NEW"),
                 source=data.get("source"),
                 target=data.get("target"),
+                analyst_assigned=data.get("analyst_assigned", "soc_lead_analyst"),
                 indicators=data.get("indicators", []),
                 evidence=data.get("evidence", {}),
                 analysis=data.get("analysis"),

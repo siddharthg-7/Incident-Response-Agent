@@ -56,6 +56,7 @@ async def seed():
                 status=data.get("status", "NEW"),
                 source=data.get("source"),
                 target=data.get("target"),
+                analyst_assigned=data.get("analyst_assigned", "soc_lead_analyst"),
                 indicators=data.get("indicators", []),
                 evidence=data.get("evidence", {}),
                 analysis=data.get("analysis"),

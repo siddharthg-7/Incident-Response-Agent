@@ -21,6 +21,11 @@ async def test_recommender_cold_baseline_without_memory():
     assert "Baseline recommendation" in rec.rationale
     assert any("DROP rule" in action for action in rec.recommended_actions)
     assert not any("CRITICAL AUDIT" in action for action in rec.recommended_actions)
+    assert rec.recommended_response is not None
+    assert rec.why_this_response is not None
+    assert "Standard containment" in rec.memory_influence
+    assert len(rec.detailed_actions) == 3
+    assert rec.detailed_actions[0].id == "ACT-01"
 
 
 @pytest.mark.asyncio
@@ -57,3 +62,11 @@ async def test_recommender_adaptive_with_recalled_memory():
     assert "sshd_config" in actions_text
     assert "PREVENTION RUNBOOK" in actions_text
     assert "Ansible" in actions_text
+
+    assert rec.recommended_response is not None
+    assert rec.why_this_response is not None
+    assert "INC-2026-001" in rec.memory_influence
+    assert len(rec.detailed_actions) >= 5
+    assert any(a.category == "eradication" for a in rec.detailed_actions)
+    assert any(a.category == "recovery" for a in rec.detailed_actions)
+

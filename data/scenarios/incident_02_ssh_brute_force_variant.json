@@ -8,6 +8,7 @@
   "detected_at": "2026-09-28T09:14:02Z",
   "source": "203.0.113.88",
   "target": "app-prod-04 (10.0.2.44)",
+  "analyst_assigned": "analyst_lead",
   "indicators": [
     "203.0.113.88",
     "admin",

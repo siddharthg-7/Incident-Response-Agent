@@ -32,11 +32,52 @@ async def test_incident_crud_and_lifecycle(client):
     analyzed_data = analyze_res.json()
     assert analyzed_data["status"] == "ANALYZED"
     assert analyzed_data["analysis"] is not None
+    assert analyzed_data["analysis"]["classification"] is not None
+    assert analyzed_data["analysis"]["suspected_root_cause"] is not None
+    assert len(analyzed_data["analysis"]["evidence_summary"]) >= 1
 
     recommend_res = await client.post(f"/api/incidents/{inc_id}/recommend")
     assert recommend_res.status_code == 200
     rec_data = recommend_res.json()
     assert rec_data["status"] == "RECOMMENDATION_READY"
+    assert rec_data["recommendation"]["recommended_response"] is not None
+    assert rec_data["recommendation"]["why_this_response"] is not None
+    assert len(rec_data["recommendation"]["detailed_actions"]) >= 1
+
+    # Test Action Status Update: Approve ACT-01
+    act_res = await client.post(
+        f"/api/incidents/{inc_id}/actions/ACT-01",
+        json={"status": "APPROVED"}
+    )
+    assert act_res.status_code == 200
+    updated_actions = act_res.json()["recommendation"]["detailed_actions"]
+    act_01 = next(a for a in updated_actions if a["id"] == "ACT-01")
+    assert act_01["status"] == "APPROVED"
+
+    # Test Action Status Update: Execute ACT-01
+    act_exec_res = await client.post(
+        f"/api/incidents/{inc_id}/actions/ACT-01",
+        json={"status": "EXECUTED"}
+    )
+    assert act_exec_res.status_code == 200
+    act_01_exec = next(a for a in act_exec_res.json()["recommendation"]["detailed_actions"] if a["id"] == "ACT-01")
+    assert act_01_exec["status"] == "EXECUTED"
+
+    # Test Analyst Assignment
+    assign_res = await client.post(
+        f"/api/incidents/{inc_id}/assign",
+        json={"analyst": "analyst_lead_sarah"}
+    )
+    assert assign_res.status_code == 200
+    assert assign_res.json()["analyst_assigned"] == "analyst_lead_sarah"
+
+    # Test PATCH incident general attributes
+    patch_res = await client.patch(
+        f"/api/incidents/{inc_id}",
+        json={"title": "Updated Unauthorized Access Attempt - Confirmed Threat"}
+    )
+    assert patch_res.status_code == 200
+    assert "Confirmed Threat" in patch_res.json()["title"]
 
     res_payload = {
         "actions_taken": ["Terminated connection", "Added IP to blacklist"],
@@ -46,14 +87,13 @@ async def test_incident_crud_and_lifecycle(client):
     assert resolve_res.status_code == 200
     assert resolve_res.json()["status"] == "RESOLVED"
 
-    pm_payload = {
-        "root_cause": "Weak administrator password on staging gateway",
-        "lessons_learned": "Enforce MFA and 16-character minimum"
-    }
-    pm_res = await client.post(f"/api/incidents/{inc_id}/postmortem", json=pm_payload)
-    assert pm_res.status_code == 200
-    assert pm_res.json()["status"] == "POSTMORTEM_COMPLETE"
+    # Test Auto-Generate Post-Mortem
+    gen_pm_res = await client.post(f"/api/incidents/{inc_id}/postmortem/generate")
+    assert gen_pm_res.status_code == 200
+    assert gen_pm_res.json()["status"] == "POSTMORTEM_COMPLETE"
+    assert gen_pm_res.json()["postmortem"]["root_cause"] is not None
 
     learn_res = await client.post(f"/api/incidents/{inc_id}/learn")
     assert learn_res.status_code == 200
     assert learn_res.json()["status"] == "success"
+

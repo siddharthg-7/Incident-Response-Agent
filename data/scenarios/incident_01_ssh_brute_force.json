@@ -8,6 +8,7 @@
   "detected_at": "2026-09-25T14:22:10Z",
   "source": "198.51.100.45",
   "target": "bastion-prod-01 (10.0.1.15)",
+  "analyst_assigned": "analyst_sarah",
   "indicators": [
     "198.51.100.45",
     "root",
@@ -23,12 +24,28 @@
     "mitre_technique": "T1110.001 - Password Guessing"
   },
   "analysis": {
+    "classification": "Credential Attack / SSH Brute Force",
+    "suspected_root_cause": "Routine OS package upgrade on bastion-prod-01 overwrote /etc/ssh/sshd_config with package maintainer defaults, inadvertently enabling password authentication.",
+    "investigation_summary": "High-frequency dictionary attack detected from 198.51.100.45 targeting bastion-prod-01. The attacker systematically attempted authentication across administrative accounts.",
+    "evidence_summary": [
+      "14,200 failed authentication attempts detected within 15 minutes",
+      "Multiple privileged accounts targeted: root, admin",
+      "Originating from external source: 198.51.100.45",
+      "Recorded in log source: /var/log/auth.log"
+    ],
+    "tactics": [
+      "MITRE ATT&CK T1110.001 - Password Guessing",
+      "MITRE ATT&CK T1021.004 - Remote Services: SSH"
+    ],
+    "extracted_iocs": ["198.51.100.45", "root", "port 22"],
     "summary": "External threat actor executing distributed dictionary attack against edge bastion SSH service.",
     "attack_vector": "Public-facing SSH port 22",
     "potential_impact": "Unauthorized shell access to production perimeter network",
-    "assessed_severity": "HIGH"
+    "assessed_severity": "HIGH",
+    "confidence": 0.95
   },
   "resolution": {
+    "status": "RESOLVED",
     "resolved_at": "2026-09-25T14:34:18Z",
     "resolved_by": "analyst_sarah",
     "actions_taken": [
@@ -37,10 +54,16 @@
       "Modified sshd_config: set PasswordAuthentication no and PubkeyAuthentication yes",
       "Restarted sshd service and validated existing open sessions"
     ],
-    "outcome": "Contained successfully within 12 minutes. Zero unauthorized sessions established. Password authentication disabled across bastion fleet."
+    "outcome": "Contained successfully within 12 minutes. Zero unauthorized sessions established. Password authentication disabled across bastion fleet.",
+    "notes": "Investigated in coordination with infrastructure ops team. Edge firewall DROP rule applied and sshd_config restored."
   },
   "postmortem": {
+    "what_happened": "Attacker botnet launched high-speed brute force against exposed port 22 on bastion-prod-01.",
     "root_cause": "Routine OS package upgrade on bastion-prod-01 overwrote /etc/ssh/sshd_config with package maintainer defaults, inadvertently enabling password authentication.",
+    "what_was_done": "Applied edge firewall drop rule, corrected sshd_config, restarted sshd, and reviewed logs.",
+    "what_worked": "Fast perimeter IP blocking stopped further attempts; prompt audit revealed config drift before credentials could be cracked.",
+    "what_did_not_work": "Host-based fail2ban was not installed, allowing high volume of attempts to reach the daemon before manual analyst action.",
+    "final_outcome": "Threat mitigated without breach. Zero unauthorized accounts compromised.",
     "lessons_learned": "Enforce automated Ansible compliance check on all perimeter servers every 15 minutes to guarantee PasswordAuthentication no is permanently set. Deploy fail2ban as an immediate perimeter circuit breaker."
   }
 }

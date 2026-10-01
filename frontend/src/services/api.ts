@@ -428,11 +428,46 @@ export const api = {
 
   // 8. Update response action status (Approve / Execute)
   async updateActionStatus(incidentId: string, actionId: string, newStatus: ActionStatus): Promise<Incident> {
+    if (!USE_MOCK) {
+      try {
+        const res = await fetch(`${API_BASE}/api/incidents/${incidentId}/actions/${actionId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus }),
+        });
+        const raw = await handleResponse<any>(res);
+        return normalizeIncident(raw);
+      } catch (err) {
+        console.warn('Backend action status update failed, updating local cache', err);
+      }
+    }
     const inc = await this.getIncident(incidentId);
     if (inc.recommendation?.detailed_actions) {
       const act = inc.recommendation.detailed_actions.find((a) => a.id === actionId);
       if (act) act.status = newStatus;
     }
+    const idx = localIncidents.findIndex((i) => i.id === inc.id);
+    if (idx !== -1) localIncidents[idx] = { ...inc };
+    return { ...inc };
+  },
+
+  // 8b. Assign analyst to lead incident investigation
+  async assignAnalyst(incidentId: string, analyst: string): Promise<Incident> {
+    if (!USE_MOCK) {
+      try {
+        const res = await fetch(`${API_BASE}/api/incidents/${incidentId}/assign`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ analyst }),
+        });
+        const raw = await handleResponse<any>(res);
+        return normalizeIncident(raw);
+      } catch (err) {
+        console.warn('Backend analyst assignment failed, updating local cache', err);
+      }
+    }
+    const inc = await this.getIncident(incidentId);
+    inc.analyst_assigned = analyst;
     const idx = localIncidents.findIndex((i) => i.id === inc.id);
     if (idx !== -1) localIncidents[idx] = { ...inc };
     return { ...inc };

@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import json
 import logging
 from typing import Any, Dict, List, Optional
@@ -74,7 +75,11 @@ class HindsightService:
             "root_cause": postmortem.get("root_cause"),
             "actions_taken": resolution.get("actions_taken", []),
             "outcome": resolution.get("outcome"),
-            "lessons_learned": postmortem.get("lessons_learned")
+            "lessons_learned": postmortem.get("lessons_learned"),
+            "incident_pattern": postmortem.get("incident_pattern") or incident_data.get("incident_type"),
+            "what_happened": postmortem.get("what_happened") or incident_data.get("description"),
+            "relevance_label": f"Historical Retained Capsule ({incident_data.get('id')})",
+            "timestamp": incident_data.get("updated_at") or incident_data.get("created_at") or datetime.now(timezone.utc).isoformat(),
         }
 
         result = await self.adapter.retain(
@@ -112,14 +117,34 @@ class HindsightService:
             incident_id = meta.get("incident_id") or match.get("id", "HISTORICAL")
             title = meta.get("title") or "Historical Incident"
 
+            score = float(match.get("score", 0.8))
+            relevance_label = meta.get("relevance_label") or f"Relevant past experience ({int(score * 100)}% Match)"
+            pattern = meta.get("incident_pattern") or f"{meta.get('incident_type', 'Security Incident')} pattern"
+            what_happened = meta.get("what_happened") or (content.split("\n")[0] if content else "Historical incident documented.")
+            
+            ts_val = meta.get("timestamp")
+            if isinstance(ts_val, str):
+                try:
+                    ts = datetime.fromisoformat(ts_val.replace("Z", "+00:00"))
+                except Exception:
+                    ts = datetime.now(timezone.utc)
+            elif isinstance(ts_val, datetime):
+                ts = ts_val
+            else:
+                ts = datetime.now(timezone.utc)
+
             recalled.append(RecalledExperience(
                 source_incident_id=incident_id,
                 title=title,
-                similarity_score=float(match.get("score", 0.8)),
+                similarity_score=score,
                 past_root_cause=root_cause,
                 past_actions_taken=actions if isinstance(actions, list) else [str(actions)],
                 past_outcome=outcome,
-                lesson_learned=lessons
+                lesson_learned=lessons,
+                incident_pattern=pattern,
+                relevance_label=relevance_label,
+                what_happened=what_happened,
+                timestamp=ts
             ))
 
         return recalled

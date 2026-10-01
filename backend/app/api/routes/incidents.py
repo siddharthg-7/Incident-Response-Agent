@@ -5,10 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
 from app.schemas.incident import (
     IncidentCreate,
+    IncidentUpdate,
     IncidentResponse,
     IncidentResolution,
     IncidentPostMortem,
-    RecalledExperience
+    RecalledExperience,
+    ActionStatusUpdateRequest,
+    AssignAnalystRequest,
 )
 from app.services.incident_service import IncidentService
 
@@ -50,6 +53,19 @@ async def get_incident(
     if not incident:
         raise HTTPException(status_code=404, detail=f"Incident {incident_id} not found")
     return incident
+
+
+@router.patch("/{incident_id}", response_model=IncidentResponse)
+async def update_incident(
+    incident_id: str,
+    payload: IncidentUpdate,
+    service: IncidentService = Depends(get_incident_service)
+):
+    """Update general incident attributes."""
+    try:
+        return await service.update_incident(incident_id, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
 
 
 @router.post("/{incident_id}/analyze", response_model=IncidentResponse)
@@ -130,5 +146,44 @@ async def learn_incident(
     try:
         result = await service.learn_incident(incident_id)
         return {"status": "success", "detail": "Experience retained in Hindsight", "result": result}
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+
+
+@router.post("/{incident_id}/actions/{action_id}", response_model=IncidentResponse)
+async def update_action_status(
+    incident_id: str,
+    action_id: str,
+    payload: ActionStatusUpdateRequest,
+    service: IncidentService = Depends(get_incident_service)
+):
+    """Approve or mark executed a specific response action."""
+    try:
+        return await service.update_action_status(incident_id, action_id, payload.status)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+
+
+@router.post("/{incident_id}/assign", response_model=IncidentResponse)
+async def assign_analyst(
+    incident_id: str,
+    payload: AssignAnalystRequest,
+    service: IncidentService = Depends(get_incident_service)
+):
+    """Assign or reassign an analyst to lead an incident investigation."""
+    try:
+        return await service.assign_analyst(incident_id, payload.analyst)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+
+
+@router.post("/{incident_id}/postmortem/generate", response_model=IncidentResponse)
+async def generate_incident_postmortem(
+    incident_id: str,
+    service: IncidentService = Depends(get_incident_service)
+):
+    """Auto-generate an outcome-oriented post-mortem from incident artifacts."""
+    try:
+        return await service.generate_postmortem(incident_id)
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc))

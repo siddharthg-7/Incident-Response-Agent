@@ -17,7 +17,11 @@ async def test_demo_reset_and_memory_endpoints(client):
     memories = mem_res.json()
     # At least INC-2026-001 has postmortem in seed data
     assert len(memories) >= 1
-    assert any(m["source_incident_id"] == "INC-2026-001" for m in memories)
+    inc_001_mem = next(m for m in memories if m["source_incident_id"] == "INC-2026-001")
+    assert inc_001_mem["relevance_label"] is not None
+    assert inc_001_mem["incident_pattern"] is not None
+    assert inc_001_mem["what_happened"] is not None
+    assert inc_001_mem["timestamp"] is not None
 
     # 3. Check learning timeline endpoint
     timeline_res = await client.get("/api/memory/timeline")
@@ -52,3 +56,7 @@ async def test_incident_memory_matches_endpoint(client):
     matches = res.json()
     assert len(matches) >= 1
     assert matches[0]["source_incident_id"] == "INC-2026-001"
+    assert matches[0]["relevance_label"] is not None
+    assert matches[0]["incident_pattern"] is not None
+    assert matches[0]["what_happened"] is not None
+

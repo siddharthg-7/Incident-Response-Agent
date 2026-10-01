@@ -28,9 +28,22 @@ async def get_db():
 
 
 async def init_db():
-    """Initialize database tables."""
+    """Initialize database tables and ensure all model columns exist."""
     # Ensure models are registered with Base.metadata
     from app.models.incident import IncidentModel  # noqa: F401
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+        def _migrate(sync_conn):
+            from sqlalchemy import text
+            try:
+                res = sync_conn.execute(text("PRAGMA table_info(incidents)"))
+                cols = [row[1] for row in res.fetchall()]
+                if cols and "analyst_assigned" not in cols:
+                    sync_conn.execute(text("ALTER TABLE incidents ADD COLUMN analyst_assigned VARCHAR(128) DEFAULT 'soc_lead_analyst'"))
+            except Exception:
+                pass
+
+        await conn.run_sync(_migrate)
+
 
